@@ -25,7 +25,7 @@ const sendUTMEvent = (utmParams) => {
 onMounted(() => {
     const utmParams = getUTMParams(window.location.search);
     appStore.setUTMParams(utmParams);
-    // sendUTMEvent(utmParams);
+    sendUTMEvent(utmParams);
 });
 
 </script>

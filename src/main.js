@@ -657,9 +657,9 @@ app.use(PrimeVue, {
         preset: MyPreset,
     },
 });
-// app.use(VueGtagPlugin, {
-//     config: { id: 'G-P21XT5CS07' },
-// }, router);
+app.use(VueGtagPlugin, {
+    config: { id: 'G-M1NQ4817BS' },
+}, router);
 app.use(router)
 
 app.mount('#app')
