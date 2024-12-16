@@ -1,7 +1,7 @@
 <template>
   <div
     class="bg-red-900 p-10 lg:p-20 flex flex-col md:flex-row justify-center md:justify-between bg-no-repeat bg-cover md:bg-contain"
-    style="background-position: right center; background-image: url('/src/assets/img/cta-fade-2.png')"
+    style="background-position: right center; background-image: url('/assets/img/cta-fade-2.png')"
   >
     <!-- Content Section -->
     <div class="lg:px-8 md:w-1/2 text-left">
