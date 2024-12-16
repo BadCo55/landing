@@ -5,7 +5,7 @@ import App from './App.vue'
 import router from './router'
 import './assets/styles/tailwind.css'
 import 'primeicons/primeicons.css'
-import VueGtagPlugin from 'vue-gtag'
+// import VueGtagPlugin from 'vue-gtag'
 
 import PrimeVue from "primevue/config";
 import Aura from "@primevue/themes/aura";
@@ -657,9 +657,9 @@ app.use(PrimeVue, {
         preset: MyPreset,
     },
 });
-app.use(VueGtagPlugin, {
-    config: { id: 'G-M1NQ4817BS' },
-}, router);
+// app.use(VueGtagPlugin, {
+//     config: { id: 'G-M1NQ4817BS' },
+// }, router);
 app.use(router)
 
 app.mount('#app')
