@@ -11,6 +11,7 @@ import { useAppStore } from '@/stores/appStore';
 const appStore = useAppStore();
 
 const sendUTMEvent = (utmParams) => {
+    console.log('Sending UTM Event:', utmParams); // Debugging
     if (window.gtag) {
         window.gtag('event', 'utm_tracking', {
             utm_source: utmParams.utm_source,
@@ -19,6 +20,8 @@ const sendUTMEvent = (utmParams) => {
             utm_term: utmParams.utm_term,
             utm_content: utmParams.utm_content,
         });
+    } else {
+        console.warn('gtag not defined');
     }
 };
 
