@@ -22,7 +22,7 @@
                     actionable reports, fast turn-around, & support that helps you close deals faster while keeping clients informed.
                 </p>
                 <div class="flex items-center justify-center lg:justify-start gap-6">
-                    <Button label="Learn More" type="button" @click="scrollTo('#benefits-1')" />
+                    <Button label="Learn More" type="button" @click="trackButtonClick('learn_more', 'hero', 'realtor_landing', '#benefits-1')" />
                     <!-- <Button label="Live Demo" type="button" outlined /> -->
                 </div>
             </div>
@@ -40,5 +40,15 @@ const appStore = useAppStore();
 const logoSrc = new URL(`/src/assets/${appStore.logoSrc}`, import.meta.url).href;
 function scrollTo(refName) {
     appStore.scrollToSection(refName);
+}
+const trackButtonClick = (action, label, page, scrollTarget) => {
+    if (window.gtag) {
+        window.gtag('event', action, {
+            event_category: 'Button Click',
+            event_label: label,
+            page_location: page,
+        });
+    }
+    scrollTo(scrollTarget);
 }
 </script>

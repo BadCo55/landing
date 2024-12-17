@@ -1,17 +1,21 @@
 <template>
-    <RealtorView />
+    <component :is="currentView" />
 </template>
 
 <script setup>
 import RealtorView from './RealtorView.vue';
+import InvestorView from './InvestorView.vue';
 import { getUTMParams } from '@/utils/utm';
 import { onMounted } from 'vue';
 import { useAppStore } from '@/stores/appStore';
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+import NotFound from './NotFound.vue';
 
 const appStore = useAppStore();
+const route = useRoute();
 
 const sendUTMEvent = (utmParams) => {
-    console.log('Sending UTM Event:', utmParams); // Debugging
     if (window.gtag) {
         window.gtag('event', 'utm_tracking', {
             utm_source: utmParams.utm_source,
@@ -20,10 +24,24 @@ const sendUTMEvent = (utmParams) => {
             utm_term: utmParams.utm_term,
             utm_content: utmParams.utm_content,
         });
-    } else {
-        console.warn('gtag not defined');
     }
 };
+
+const currentView = computed(() => {
+  const audience = route.params.audience;
+
+  switch (audience) {
+    case 'realtor':
+      return RealtorView;
+    case 'investor':
+      return InvestorView;
+    case 'homeowner':
+      return HomeownerView;
+    default:
+      // Optional: Handle 404 or fallback view
+      return NotFound;
+  }
+});
 
 onMounted(() => {
     const utmParams = getUTMParams(window.location.search);

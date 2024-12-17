@@ -7,7 +7,7 @@
     <div class="absolute inset-0 bg-red-900 opacity-80"></div>
 
     <!-- Content Section: Why Choose Us -->
-    <div class="relative z-10 text-white w-full md:w-1/2 md:pr-10 text-left mb-10 md:mb-0">
+    <div class="relative z-10 text-white w-full md:w-1/2 md:pr-10 text-left mb-10 md:mb-0 mt-10">
       <img src="@/assets/logo-dark.png" alt="" class="w-[20rem] mb-10">
 
       <h2 class="text-3xl md:text-5xl font-bold mb-6">Why Choose Us?</h2>
@@ -66,7 +66,7 @@
           <input
             type="text"
             id="name"
-            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 bg-slate-50"
+            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-slate-50 text-slate-800"
             placeholder="Enter your name"
           />
         </div>
@@ -78,7 +78,7 @@
             <input
               type="email"
               id="email"
-              class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 bg-slate-50"
+              class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-slate-50 text-slate-800"
               placeholder="Enter your email"
             />
           </div>
@@ -88,7 +88,7 @@
             <input
               type="tel"
               id="phone"
-              class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 bg-slate-50"
+              class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-slate-50 text-slate-800"
               placeholder="Enter your phone #"
             />
           </div>
@@ -100,7 +100,7 @@
           <textarea
             id="message"
             rows="4"
-            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500 bg-slate-50"
+            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-slate-50 text-slate-800"
             placeholder="Enter your message"
           ></textarea>
         </div>
@@ -118,7 +118,5 @@
 </template>
 
 <script setup>
-import { useAppStore } from '@/stores/appStore';
-const appStore = useAppStore();
 
 </script>
