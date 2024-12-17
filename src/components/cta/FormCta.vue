@@ -64,6 +64,7 @@
         <div>
           <label for="name" class="block text-sm font-medium text-gray-700">Your Name</label>
           <input
+            v-model="formData.name"
             type="text"
             id="name"
             class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-slate-50 text-slate-800"
@@ -76,6 +77,7 @@
           <div class="flex-1">
             <label for="email" class="block text-sm font-medium text-gray-700 flex-wrap">Email Address</label>
             <input
+              v-model="formData.email"
               type="email"
               id="email"
               class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-slate-50 text-slate-800"
@@ -86,6 +88,7 @@
           <div class="flex-1">
             <label for="phone" class="block text-sm font-medium text-gray-700">Phone #</label>
             <input
+              v-model="formData.phone"
               type="tel"
               id="phone"
               class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-slate-50 text-slate-800"
@@ -98,6 +101,7 @@
         <div>
           <label for="message" class="block text-sm font-medium text-gray-700">Message</label>
           <textarea
+            v-model="formData.message"
             id="message"
             rows="4"
             class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-slate-50 text-slate-800"
@@ -118,19 +122,27 @@
 </template>
 
 <script setup>
+import { useAppStore } from '@/stores/appStore';
 import { reactive } from 'vue';
+const appStore = useAppStore();
 const formData = reactive({
   name: '',
   email: '',
   phone: '',
   message: '',
+  date: '',
+  utm_parameters: ''
 });
 const submitForm = async () => {
+
+  formData.date = new Date().toISOString(); // Add a date in ISO format
+  formData.utm_parameters =  JSON.stringify(appStore.utmParams); // Include UTM params as a string
+
   try {
     const response = await fetch('https://hooks.zapier.com/hooks/catch/5555872/2sxd8wt/', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: JSON.stringify(formData),
     });
