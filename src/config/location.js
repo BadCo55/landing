@@ -1,4 +1,4 @@
 export const locationConfig = {
-  logoLight: '/src/assets/logo-light.png',
-  logoDark: '/src/assets/logo-dark.png',
+  logoLight: '@/assets/logo-light.png',
+  logoDark: '@/assets/logo-dark.png',
 }

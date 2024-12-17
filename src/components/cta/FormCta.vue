@@ -8,7 +8,7 @@
 
     <!-- Content Section: Why Choose Us -->
     <div class="relative z-10 text-white w-full md:w-1/2 md:pr-10 text-left mb-10 md:mb-0">
-      <img :src="appStore.logoDark" alt="" class="w-[20rem] mb-10">
+      <img src="@/assets/logo-dark.png" alt="" class="w-[20rem] mb-10">
 
       <h2 class="text-3xl md:text-5xl font-bold mb-6">Why Choose Us?</h2>
       <ul class="space-y-4 text-lg mb-8">
