@@ -15,16 +15,16 @@ const router = createRouter({
       name: 'audience',
       component: LandingView,
     },
-    {
-      path: '/404',
-      name: '404',
-      component: NotFound,
-    },
-    {
-      path: '/:pathMatch(.*)*', // Catch-all route
-      name: 'NotFound',
-      redirect: '/404', // Redirect to the 404 route
-    },
+    // {
+    //   path: '/404',
+    //   name: '404',
+    //   component: NotFound,
+    // },
+    // {
+    //   path: '/:pathMatch(.*)*', // Catch-all route
+    //   name: 'NotFound',
+    //   redirect: '/404', // Redirect to the 404 route
+    // },
   ],
 })
 

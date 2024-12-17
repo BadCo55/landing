@@ -39,7 +39,7 @@ const currentView = computed(() => {
       return HomeownerView;
     default:
       // Optional: Handle 404 or fallback view
-      return NotFound;
+      return RealtorView;
   }
 });
 
