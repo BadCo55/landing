@@ -59,7 +59,7 @@
     <!-- Form Section -->
     <div class="relative z-10 bg-white rounded-lg shadow-lg p-6 md:p-10 w-full md:w-1/2">
       <h3 class="text-2xl font-bold mb-6 text-red-600">Contact Us Today</h3>
-      <form class="space-y-6">
+      <form class="space-y-6" @submit.prevent="submitForm">
         <!-- Name Field -->
         <div>
           <label for="name" class="block text-sm font-medium text-gray-700">Your Name</label>
@@ -118,5 +118,31 @@
 </template>
 
 <script setup>
+import { reactive } from 'vue';
+const formData = reactive({
+  name: '',
+  email: '',
+  phone: '',
+  message: '',
+});
+const submitForm = async () => {
+  try {
+    const response = await fetch('https://hooks.zapier.com/hooks/catch/5555872/2sxd8wt/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
 
+    if (response.ok) {
+      alert('Form submitted successfully!');
+    } else {
+      alert('There was a problem submitting the form.');
+    }
+  } catch (error) {
+    console.error('Error submitting form:', error);
+    alert('An error occurred while submitting the form.');
+  }
+};
 </script>

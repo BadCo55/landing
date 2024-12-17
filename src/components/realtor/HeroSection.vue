@@ -42,14 +42,12 @@ function scrollTo(refName) {
     appStore.scrollToSection(refName);
 }
 const trackButtonClick = (action, label, page, scrollTarget) => {
-    console.log('sending a click!')
     if (window.gtag) {
         window.gtag('event', action, {
             event_category: 'Button Click',
             event_label: label,
             page_location: page,
         });
-        console.log('click sent!');
     }
     
     scrollTo(scrollTarget);
