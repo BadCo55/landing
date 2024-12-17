@@ -6,7 +6,7 @@
                     <div class="flex lg:justify-center gap-4 md:gap-6 xl:gap-12 2xl:px-20">
                         <div class="flex-1 xl:p-4 hidden lg:block">
                             <Image
-                              src="/assets/img/report-detail-1.png"
+                              src="@/assets/img/report-detail-1.png"
                               preview
                             />
                         </div>
@@ -30,7 +30,7 @@
                             </div>
                             <div class="w-full mt-4 block lg:hidden">
                               <Image
-                                src="/assets/img/report-detail-1.png"
+                                src="@/assets/img/report-detail-1.png"
                                 preview
                               />
                             </div>
@@ -53,7 +53,7 @@
                             </div>
                             <div class="w-full mt-4 block lg:hidden">
                               <Image
-                                src="/assets/img/report-detail-2.png"
+                                src="@/assets/img/report-detail-2.png"
                                 preview
                               />
                             </div>
@@ -64,7 +64,7 @@
                         </div>
                         <div class="flex-1 xl:p-4 hidden lg:block">
                             <Image
-                              src="/assets/img/report-detail-2.png"
+                              src="@/assets/img/report-detail-2.png"
                               preview
                             />
                         </div>
@@ -72,7 +72,7 @@
                     <div class="flex lg:justify-center gap-4 md:gap-6 xl:gap-12 2xl:px-20">
                         <div class="flex-1 xl:p-4 hidden lg:block">
                             <Image
-                              src="/assets/img/report-detail-3.png"
+                              src="@/assets/img/report-detail-3.png"
                               preview
                             />
                         </div>
@@ -96,7 +96,7 @@
                             </div>
                             <div class="w-full mt-4 block lg:hidden">
                               <Image
-                                src="/assets/img/report-detail-3.png"
+                                src="@/assets/img/report-detail-3.png"
                                 preview
                               />
                             </div>
@@ -119,7 +119,7 @@
                             </div>
                             <div class="w-full mt-4 block lg:hidden">
                               <Image
-                                src="/assets/img/report-detail-4.png"
+                                src="./assets/img/report-detail-4.png"
                                 preview
                               />
                             </div>
@@ -130,7 +130,7 @@
                         </div>
                         <div class="flex-1 xl:p-4 hidden lg:block">
                             <Image
-                              src="/assets/img/report-detail-4.png"
+                              src="./assets/img/report-detail-4.png"
                               preview
                             />
                         </div>

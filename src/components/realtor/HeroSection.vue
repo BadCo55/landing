@@ -5,8 +5,8 @@
                 <div class="flex gap-10 mb-5">
                     <img :src="appStore.logoSrc" alt="" class="w-[25rem]">
                     <div class="flex flex-col gap-5 justify-center">
-                        <img src="/src/assets/fabi.png" alt="" class="w-24 rounded-full">
-                        <img src="/src/assets/bbb.png" alt="" class="w-12 mx-auto">
+                        <img src="@/assets/fabi.png" alt="" class="w-24 rounded-full">
+                        <img src="@/assets/bbb.png" alt="" class="w-12 mx-auto">
                     </div>
                 </div>
                 <h1 class="text-3xl lg:text-5xl font-bold text-slate-800 dark:text-slate-50 mb-2 text-center lg:text-left">

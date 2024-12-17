@@ -1,7 +1,7 @@
 <template>
   <div
-    class="bg-red-900 relative p-10 md:p-20 flex flex-col md:flex-row justify-center items-center bg-cover bg-no-repeat"
-    style="background-image: url('/src/assets/img/downtown-miami.jpg'); background-position: center; background-size: cover;"
+    class="bg-red-900 relative p-10 md:p-20 flex flex-col-reverse md:flex-row justify-center items-center bg-cover bg-no-repeat bg-[url('@/assets/img/downtown-miami.jpg')]"
+    style="background-position: center; background-size: cover;"
   >
     <!-- Red Overlay -->
     <div class="absolute inset-0 bg-red-900 opacity-80"></div>
@@ -120,4 +120,5 @@
 <script setup>
 import { useAppStore } from '@/stores/appStore';
 const appStore = useAppStore();
+
 </script>
