@@ -4,7 +4,7 @@
           <h1 class="text-2xl text-slate-900 dark:text-slate-200 font-bold mb-2">Frequently Asked Questions</h1>
           <p class="text-slate-700 dark:text-slate-200/70 leading-normal">Get the answers to your most common questions about our services, process, and reports. We're here to make your inspection experience seamless and stress-free.</p>
         </div>
-        <div class="mt-12 mx-10 bg-slate-800 rounded-lg p-5">
+        <div class="mt-12 mx-10 bg-slate-50 dark:bg-slate-800 rounded-lg p-5">
             <template v-for="(item, index) of faqs" :key="index">
                 <div class="flex items-start gap-4 md:flex-row flex-col">
                     <div class="flex-1 text-slate-900 dark:text-slate-100/80 font-medium text-lg leading-normal">
