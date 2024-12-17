@@ -3,7 +3,7 @@
         <div class="flex-1 flex items-center justify-center">
             <div class="p-6 pt-12 lg:p-12">
                 <div class="flex gap-10 mb-5">
-                    <img :src="appStore.logoSrc" alt="" class="w-[25rem]">
+                    <img :src="logoSrc" alt="" class="w-[25rem]">
                     <div class="flex flex-col gap-5 justify-center">
                         <img src="@/assets/fabi.png" alt="" class="w-24 rounded-full">
                         <img src="@/assets/bbb.png" alt="" class="w-12 mx-auto">
@@ -37,6 +37,7 @@ import Button from 'primevue/button';
 import { useAppStore } from '@/stores/appStore';
 const appStore = useAppStore();
 
+const logoSrc = new URL(`/src/assets/${appStore.logoSrc}`, import.meta.url).href;
 function scrollTo(refName) {
     appStore.scrollToSection(refName);
 }

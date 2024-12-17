@@ -6,8 +6,8 @@ export const useAppStore = defineStore('appStore', {
         isDarkMode: false,
         logoSrc: locationConfig.logoLight,
         mediaQuery: null, // Store media query reference for cleanup
-        logoLight: '@/assets/logo-light.png',
-        logoDark: '@/assets/logo-dark.png',
+        logoLight: 'logo-light.png',
+        logoDark: 'logo-dark.png',
         utmParams: {},
     }),
     actions: {
