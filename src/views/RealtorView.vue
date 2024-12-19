@@ -4,7 +4,7 @@
     <SocialProof />
     <ServicesSection />
     <CallToAction />
-    <ExploreReportSection />
+    <ExploreReportSection @showSampleReport="showSampleReport" />
     <SocialCta />
     <FaqSection />
     <BenefitsSectionTwo />

@@ -1,7 +1,10 @@
 <template>
 <div class="bg-slate-0 dark:bg-slate-800 px-6 py-20 md:px-12 lg:px-20 overflow-hidden">
-            <div class="font-bold text-slate-900 dark:text-slate-50 text-3xl mb-4 text-center">Explore Our Report</div>
-            <div class="text-slate-700 dark:text-slate-50/70 text-center mb-8 leading-normal">Our reports go beyond observations to provide actionable insights and repair costs for confident decision-making.</div>
+            <div class="flex flex-col justify-center">
+                <div class="font-bold text-slate-900 dark:text-slate-50 text-3xl mb-4 text-center">Explore Our Report</div>
+                <div class="text-slate-700 dark:text-slate-50/70 text-center mb-5 leading-normal">Our reports go beyond observations to provide actionable insights and repair costs for confident decision-making.</div>
+                <Button label="Click Here to See Our Report In Action" severity="primary" class="mx-auto mb-8" @click="$emit('showSampleReport')"></Button>
+            </div>
             <div class="flex flex-col gap-8 max-w-7xl mx-auto">
                 <div class="flex lg:justify-center gap-4 md:gap-6 xl:gap-12 2xl:px-20">
                     <div class="flex-1 xl:p-4 hidden lg:block">
@@ -147,7 +150,7 @@
         </div>
 </template>
 <script setup>
-import { Image } from 'primevue';
+import { Image, Button } from 'primevue';
 
 const img1 = new URL(`/src/assets/img/report-detail-1.png`, import.meta.url).href;
 const img2 = new URL(`/src/assets/img/report-detail-2.png`, import.meta.url).href;

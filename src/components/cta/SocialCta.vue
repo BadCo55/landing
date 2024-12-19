@@ -14,17 +14,20 @@
 
       <!-- Social Media Icons -->
       <div class="flex space-x-6 mt-6 justify-center lg:justify-start">
-        <a href="https://www.facebook.com" target="_blank" aria-label="Facebook">
+        <a href="https://www.facebook.com/diversifiedhomeinspecions/" target="_blank" aria-label="Facebook">
           <i class="pi pi-facebook text-white hover:text-blue-500" style="font-size: 3rem"></i>
         </a>
-        <a href="https://www.instagram.com" target="_blank" aria-label="Instagram">
+        <a href="https://www.instagram.com/diversified_home_inspections/" target="_blank" aria-label="Instagram">
           <i class="pi pi-instagram text-white hover:text-pink-500" style="font-size: 3rem"></i>
         </a>
-        <a href="https://www.linkedin.com" target="_blank" aria-label="LinkedIn">
+        <a href="https://www.linkedin.com/company/diversified-home-inspections/" target="_blank" aria-label="LinkedIn">
           <i class="pi pi-linkedin text-white hover:text-blue-300" style="font-size: 3rem"></i>
         </a>
-        <a href="https://www.twitter.com" target="_blank" aria-label="Twitter">
+        <a href="https://x.com/divhomeinsp" target="_blank" aria-label="Twitter">
           <i class="pi pi-twitter text-white hover:text-blue-400" style="font-size: 3rem"></i>
+        </a>
+        <a href="https://www.google.com/search?q=Diversified+Home+Inspections+Southwest+Ranches+FL&oq=Diversified+Home+Inspections+Southwest+Ranches+FL" target="_blank" aria-label="Twitter">
+          <i class="pi pi-google text-white hover:text-blue-400" style="font-size: 3rem"></i>
         </a>
       </div>
 

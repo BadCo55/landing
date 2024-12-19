@@ -176,10 +176,9 @@ const submitForm = async () => {
     });
 
     if (response.ok) {
-      alert('Form submitted successfully!');
-    } else {
-      alert('There was a problem submitting the form.');
+      window.location.href = 'https://diversifiedhomeinspections.com/thank-you-contact-us/'
     }
+
   } catch (error) {
     console.error('Error submitting form:', error);
 
