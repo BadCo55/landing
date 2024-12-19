@@ -6,15 +6,15 @@
                 <div class="flex gap-5">
                     <div>
                         <p class="text-center font-medium text-2xl mb-3 bg-slate-100 dark:bg-slate-800 rounded-lg">Page 1</p>
-                        <img src="@/assets/img/report/asset1.svg" alt="Page 01" class="w-full rounded-lg shadow-lg bg-white border" />
+                        <img src="/img/report/asset1.svg" alt="Page 01" class="w-full rounded-lg shadow-lg bg-white border" />
                     </div>
                     <div>
                         <p class="text-center font-medium text-2xl mb-3 bg-slate-100 dark:bg-slate-800 rounded-lg">Page 2</p>
-                        <img src="@/assets/img/report/asset2.svg" alt="Page 02" class="w-full rounded-lg shadow-lg bg-white border" />
+                        <img src="/img/report/asset2.svg" alt="Page 02" class="w-full rounded-lg shadow-lg bg-white border" />
                     </div>
                     <div>
                         <p class="text-center font-medium text-2xl mb-3 bg-slate-100 dark:bg-slate-800 rounded-lg">Page 3</p>
-                        <img src="@/assets/img/report/asset3.svg" alt="Page 02" class="w-full rounded-lg shadow-lg bg-white border" />
+                        <img src="/img/report/asset3.svg" alt="Page 02" class="w-full rounded-lg shadow-lg bg-white border" />
                     </div>
                 </div>
             </div>
@@ -108,33 +108,80 @@
 
 <script setup>
 import { Skeleton, Galleria } from 'primevue';
+// import asset4 from '@/assets/img/report/asset4.svg';
+// import asset5 from '@/assets/img/report/asset5.svg';
+// import asset6 from '@/assets/img/report/asset6.svg';
+// import asset7 from '@/assets/img/report/asset7.svg';
+// import asset8 from '@/assets/img/report/asset8.svg';
+// import asset9 from '@/assets/img/report/asset9.svg';
+// import asset10 from '@/assets/img/report/asset10.svg';
+// import asset11 from '@/assets/img/report/asset11.svg';
+// import asset12 from '@/assets/img/report/asset12.svg';
+// import asset13 from '@/assets/img/report/asset13.svg';
+
+// import image1 from '@/assets/img/report/report-images-01.png';
+// import image2 from '@/assets/img/report/report-images-02.png';
+// import image3 from '@/assets/img/report/report-images-03.png';
+// import image4 from '@/assets/img/report/report-images-04.png';
+// import image5 from '@/assets/img/report/report-images-05.png';
+// import image6 from '@/assets/img/report/report-images-06.png';
+// import image7 from '@/assets/img/report/report-images-07.png';
+// import image8 from '@/assets/img/report/report-images-08.png';
+// import image9 from '@/assets/img/report/report-images-09.png';
+// import image10 from '@/assets/img/report/report-images-10.png';
+// import image11 from '@/assets/img/report/report-images-11.png';
 
 const imagePaths = [
-  "/src/assets/img/report/asset4.svg",
-  "/src/assets/img/report/asset5.svg",
-  "/src/assets/img/report/asset6.svg",
-  "/src/assets/img/report/asset7.svg",
-  "/src/assets/img/report/asset8.svg",
-  "/src/assets/img/report/asset9.svg",
-  "/src/assets/img/report/asset10.svg",
-  "/src/assets/img/report/asset11.svg",
-  "/src/assets/img/report/asset12.svg",
-  "/src/assets/img/report/asset13.svg",
+  "/img/report/asset4.svg",
+  "/img/report/asset5.svg",
+  "/img/report/asset6.svg",
+  "/img/report/asset7.svg",
+  "/img/report/asset8.svg",
+  "/img/report/asset9.svg",
+  "/img/report/asset10.svg",
+  "/img/report/asset11.svg",
+  "/img/report/asset12.svg",
+  "/img/report/asset13.svg",
 ];
+// const imagePaths = [
+//     asset4,
+//     asset5,
+//     asset6,
+//     asset7,
+//     asset8,
+//     asset9,
+//     asset10,
+//     asset11,
+//     asset12,
+//     asset13,
+// ];
 
 const imagePagePaths = [
-  "/src/assets/img/report/report-images-01.png",
-  "/src/assets/img/report/report-images-02.png",
-  "/src/assets/img/report/report-images-03.png",
-  "/src/assets/img/report/report-images-04.png",
-  "/src/assets/img/report/report-images-05.png",
-  "/src/assets/img/report/report-images-06.png",
-  "/src/assets/img/report/report-images-07.png",
-  "/src/assets/img/report/report-images-08.png",
-  "/src/assets/img/report/report-images-09.png",
-  "/src/assets/img/report/report-images-10.png",
-  "/src/assets/img/report/report-images-11.png",
+  "/img/report/report-images-01.png",
+  "/img/report/report-images-02.png",
+  "/img/report/report-images-03.png",
+  "/img/report/report-images-04.png",
+  "/img/report/report-images-05.png",
+  "/img/report/report-images-06.png",
+  "/img/report/report-images-07.png",
+  "/img/report/report-images-08.png",
+  "/img/report/report-images-09.png",
+  "/img/report/report-images-10.png",
+  "/img/report/report-images-11.png",
 ];
+// const imagePagePaths = [
+//     image1,
+//     image2,
+//     image3,
+//     image4,
+//     image5,
+//     image6,
+//     image7,
+//     image8,
+//     image9,
+//     image10,
+//     image11,
+// ];
 
 const captions = [
   "Page 4 - Grounds & Sprinklers",
