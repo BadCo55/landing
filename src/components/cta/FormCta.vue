@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-red-900 relative p-10 md:p-20 flex flex-col-reverse md:flex-row justify-center items-center bg-cover bg-no-repeat bg-[url('@/assets/img/downtown-miami.jpg')]"
+    class="bg-red-900 relative p-5 md:p-20 flex flex-col-reverse md:flex-row justify-center items-center bg-cover bg-no-repeat bg-[url('@/assets/img/downtown-miami.jpg')]"
     style="background-position: center; background-size: cover;"
   >
     <!-- Red Overlay -->
@@ -8,7 +8,7 @@
 
     <!-- Content Section: Why Choose Us -->
     <div class="relative z-10 text-white w-full md:w-1/2 md:pr-10 text-left mb-10 md:mb-0 mt-10">
-      <img src="@/assets/logo-dark.png" alt="" class="w-[20rem] mb-10">
+      <img src="@/assets/logo-dark.png" alt="" class="mx-auto lg:mx-0 w-[20rem] mb-10">
 
       <h2 class="text-3xl md:text-5xl font-bold mb-6">Why Choose Us?</h2>
       <ul class="space-y-4 text-lg mb-8">
@@ -44,7 +44,7 @@
           <i class="pi pi-envelope text-green-500 mr-3"></i>
           <a
             href="mailto:office@diversifiedhomeinspections.com"
-            class="hover:text-blue-500 hover:underline break-all"
+            class="hover:text-blue-500 hover:underline break-all text-base"
           >
             office@diversifiedhomeinspections.com
           </a>

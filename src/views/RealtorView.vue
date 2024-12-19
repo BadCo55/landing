@@ -1,5 +1,5 @@
 <template>
-    <HeroSection />
+    <HeroSection @showSampleReport="showSampleReport" />
     <BenefitsSectionOne id="benefits-1" />
     <SocialProof />
     <ServicesSection />
@@ -9,6 +9,8 @@
     <FaqSection />
     <BenefitsSectionTwo />
     <FormCta id="form-cta" />
+
+    <SampleReportDialog :visible="visible" @update:visible="visible = $event" />
 </template>
 
 <script setup>
@@ -22,4 +24,12 @@ import SocialCta from '@/components/cta/SocialCta.vue';
 import FaqSection from '@/components/FaqSection.vue';
 import BenefitsSectionTwo from '@/components/realtor/BenefitsSectionTwo.vue';
 import FormCta from '@/components/cta/FormCta.vue';
+import SampleReportDialog from '@/components/SampleReportDialog.vue';
+import { ref } from 'vue';
+
+const visible = ref(false);
+const showSampleReport = () => {
+    visible.value = true;
+}
+
 </script>

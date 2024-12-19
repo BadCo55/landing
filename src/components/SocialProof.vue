@@ -3,16 +3,17 @@
       <div class="mb-24 font-bold text-3xl">
           <span class="text-slate-900 dark:text-slate-200">What Clients Are Saying About Us</span>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10">
+      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-10">
         <Card v-for="(testimonial, index) in testimonials" :key="index" class="bg-slate-200">
           <template #content>
               <div class="flex gap-10 py-5 ps-5">
-                <div class="">
-                  <img src="/src/assets/quotes.png" class="w-8">
-                </div>
-                <div class="w-3/4 text-start">
+                
+                <div class="w-full text-start">
                   <div>
-                    <Rating v-model="stars" disabled class="mb-3" />
+                    <div class="flex items-center gap-5 mb-5 justify-between">
+                      <img src="/src/assets/quotes2.png" class="w-8">
+                      <Rating v-model="stars" disabled class="me-5" />
+                    </div>
                     <div class="dark:text-slate-300">
                       {{ testimonial.text }}
                     </div>

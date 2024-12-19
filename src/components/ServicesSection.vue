@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-slate-100 dark:bg-slate-800 px-6 pt-20 pb-10 md:px-12 lg:px-20 text-center">
+    <div class="bg-slate-200 dark:bg-slate-800 px-6 pt-20 pb-10 md:px-12 lg:px-20 text-center">
       <div class="mb-4 font-bold text-3xl">
             <span class="text-slate-900 dark:text-slate-50">Our Services</span>
             <!-- <span class="text-red-600 dark:text-red-400">Consistently</span> -->
@@ -52,7 +52,7 @@
           </template>
         </Card>
       </div>
-      <div class="grid grid-cols-1 lg:grid-cols-2 lg:mx-20 gap-10">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:mx-20 gap-10">
         <Card v-for="(service, index) in services" :key="index">
           <template #content>
             <div class="flex items-center p-3 lg:p-6">

@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import { createHead } from '@vueuse/head'
 import { createPinia } from 'pinia'
 
 import App from './App.vue'
@@ -14,7 +15,9 @@ import { definePreset } from "@primevue/themes";
 import '@fortawesome/fontawesome-free/css/all.css';
 import '@fortawesome/fontawesome-free/js/all.js';
 
+
 const app = createApp(App)
+const head = createHead();
 
 const MyPreset = definePreset(Aura, {
     primitive: {
@@ -466,7 +469,7 @@ const MyPreset = definePreset(Aura, {
                     hoverMutedColor: "{slate.600}"
                 },
                 content: {
-                    background: "{slate.200}",
+                    background: "{slate.100}",
                     hoverBackground: "{slate.100}",
                     borderColor: "{slate.50}",
                     color: "{text.color}",
@@ -535,7 +538,7 @@ const MyPreset = definePreset(Aura, {
             dark: {
                 primary: {
                     color: "{primary.400}",
-                    contrastColor: "{slate.900}",
+                    contrastColor: "{slate.100}",
                     hoverColor: "{primary.300}",
                     activeColor: "{primary.200}"
                 },
@@ -656,7 +659,9 @@ const MyPreset = definePreset(Aura, {
     }
 });
 
+
 app.use(createPinia())
+app.use(head);
 app.use(PrimeVue, {
     theme: {
         preset: MyPreset,

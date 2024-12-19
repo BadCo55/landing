@@ -5,13 +5,13 @@
             <span class="text-red-600 dark:text-red-400">Trusted by Homeowners</span>
         </div>
         <div class="text-slate-700 dark:text-slate-50/70 mb-[3rem]">Streamlined inspections, detailed reports, and exceptional service–<span class="font-bold">designed to help you close deals faster.</span></div>
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-3.5 gap-y-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-x-3.5 gap-y-6">
             <div class="w-full p-4" v-for="(item, index) in items" :key="index">
                 <span
                     class="w-16 h-16 mb-6 rounded-lg flex items-center justify-center mx-auto bg-white dark:bg-slate-200 shadow-[0px_2px_6px_0px_rgba(0,0,0,0.12),0px_0px_2px_0px_rgba(0,0,0,0.06),0px_4px_10px_0px_rgba(0,0,0,0.03)]"
                     >
-                    <i :class="item.icon" v-if="item.icon === 'fa-regular fa-handshake'" class="text-lg font-light lg:text-xl text-red-500 dark:text-red-500" />
-                    <i :class="item.icon" v-else class="text-2xl lg:text-3xl text-red-500 dark:text-red-500" />
+                    <i :class="item.icon" v-if="item.icon === 'fa-regular fa-handshake'" class="font-light text-red-500 dark:text-red-500" style="font-size: 3rem" />
+                    <i :class="item.icon" v-else class="text-red-500 dark:text-red-500" style="font-size: 2rem" />
                 </span>
                 <div class="text-slate-700 dark:text-slate-50 text-xl mb-2 font-bold">
                     {{ item.heading }}
@@ -31,8 +31,16 @@
                     Support Your Clients & Strengthen Your Brand
                 </p>
             </div>
-            <div class="flex-1 text-end mt-10 lg:mt-0">
+            <div class="flex gap-5 text-end mt-10 lg:mt-0">
                 <Button label="Get Started" severity="warn" class="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 shadow-md" @click="trackButtonClick('get_started', 'cta', 'realtor_landing', '#form-cta')" />
+                <a href="tel:+19542529980">
+                    <Button severity="warn">
+                        <div class="flex flex-col">
+                            <p>Call Now:</p>
+                            <p>(954) 252-9980</p>
+                        </div>
+                    </Button>
+                </a>
             </div>
         </div>
     </div>
@@ -78,7 +86,7 @@ const items = [
     {
         heading: 'Tailored For Realtors',
         description: 'Non-alarming, easy-to-understand reports designed to manage expectations and make negotiations more efficient for your clients.',
-        icon: 'fa-regular fa-handshake'
+        icon: 'fa-regular fa-handshake fa-lg'
     },
     {
         heading: 'Save Time & Effort',

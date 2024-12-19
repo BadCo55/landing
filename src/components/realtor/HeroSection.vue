@@ -2,11 +2,11 @@
     <div class="flex lg:flex-row flex-col gap-4 bg-surface-0 dark:bg-surface-900">
         <div class="flex-1 flex items-center justify-center">
             <div class="p-6 pt-12 lg:p-12">
-                <div class="flex gap-10 mb-5">
-                    <img :src="logoSrc" alt="" class="w-[25rem]">
-                    <div class="flex flex-col gap-5 justify-center">
-                        <img src="@/assets/fabi.png" alt="" class="w-24 rounded-full">
-                        <img src="@/assets/bbb.png" alt="" class="w-12 mx-auto">
+                <div class="flex flex-col sm:flex-row gap-10 mb-5 justify-center lg:justify-start">
+                    <img :src="logoSrc" alt="" class="w-[25rem] lg:w-[30rem] shrink-0">
+                    <div class="flex flex-row md:flex-col gap-5 justify-center items-center">
+                        <img src="@/assets/fabi.png" alt="" class="hidden sm:block sm:w-32 sm:h-20">
+                        <img src="@/assets/bbb.png" alt="" class="hidden sm:block sm:w-12 lg:mx-0">
                     </div>
                 </div>
                 <h1 class="text-3xl lg:text-5xl font-bold text-slate-800 dark:text-slate-50 mb-2 text-center lg:text-left">
@@ -23,7 +23,9 @@
                 </p>
                 <div class="flex items-center justify-center lg:justify-start gap-6">
                     <Button label="Learn More" type="button" @click="trackButtonClick('learn_more', 'hero', 'realtor_landing', '#benefits-1')" />
-                    <!-- <Button label="Live Demo" type="button" outlined /> -->
+                    <Button label="Live Demo" type="button" outlined @click="$emit('showSampleReport')" />
+                    <RouterLink to="/sample-report">
+                    </RouterLink>
                 </div>
             </div>
         </div>
@@ -35,6 +37,8 @@
 <script setup>
 import Button from 'primevue/button';
 import { useAppStore } from '@/stores/appStore';
+
+defineEmits(['showSampleReport']);
 const appStore = useAppStore();
 
 const logoSrc = new URL(`/src/assets/${appStore.logoSrc}`, import.meta.url).href;

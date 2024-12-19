@@ -1,10 +1,10 @@
 <template>
   <div
-    class="bg-red-900 p-10 lg:p-20 flex flex-col md:flex-row justify-center md:justify-between bg-no-repeat bg-cover md:bg-contain bg-[url('/src/assets/img/cta-fade-2.png')]"
+    class="bg-red-900 p-5 lg:p-20 flex flex-col md:flex-row justify-center md:justify-between bg-no-repeat bg-cover md:bg-contain bg-[url('/src/assets/img/cta-fade-2.png')]"
     style="background-position: right center;"
   >
     <!-- Content Section -->
-    <div class="lg:px-8 md:w-1/2 text-left">
+    <div class="px-0 lg:px-8 md:w-1/2 text-center lg:text-start">
       <div class="text-white font-bold text-5xl md:text-6xl">
         Let's Stay Connected!
       </div>
@@ -13,23 +13,23 @@
       </div>
 
       <!-- Social Media Icons -->
-      <div class="flex space-x-6 mt-6">
+      <div class="flex space-x-6 mt-6 justify-center lg:justify-start">
         <a href="https://www.facebook.com" target="_blank" aria-label="Facebook">
-          <i class="pi pi-facebook text-4xl text-white hover:text-blue-500"></i>
+          <i class="pi pi-facebook text-white hover:text-blue-500" style="font-size: 3rem"></i>
         </a>
         <a href="https://www.instagram.com" target="_blank" aria-label="Instagram">
-          <i class="pi pi-instagram text-4xl text-white hover:text-pink-500"></i>
+          <i class="pi pi-instagram text-white hover:text-pink-500" style="font-size: 3rem"></i>
         </a>
         <a href="https://www.linkedin.com" target="_blank" aria-label="LinkedIn">
-          <i class="pi pi-linkedin text-4xl text-white hover:text-blue-300"></i>
+          <i class="pi pi-linkedin text-white hover:text-blue-300" style="font-size: 3rem"></i>
         </a>
         <a href="https://www.twitter.com" target="_blank" aria-label="Twitter">
-          <i class="pi pi-twitter text-4xl text-white hover:text-blue-400"></i>
+          <i class="pi pi-twitter text-white hover:text-blue-400" style="font-size: 3rem"></i>
         </a>
       </div>
 
       <!-- Newsletter Signup -->
-      <div class="mb-8 mt-5">
+      <div class="mb-8 mt-5 text-center lg:text-start">
         <input
           type="email"
           placeholder="Enter your email"
@@ -40,11 +40,16 @@
         </button>
       </div>
 
+      <div class="flex gap-5">
+        <Button label="Get Started" class="w-full lg:w-auto"></Button>
+        <Button class="w-full lg:w-auto">
+          <div class="flex flex-col">
+            <p>Call Now:</p>
+            <p>(954) 252-9980</p>
+          </div>
+        </Button>
 
-      <!-- Call-to-Action Button -->
-      <button class="bg-white text-blue-900 font-medium py-3 px-8 rounded-md hover:bg-gray-200">
-        Connect With Us
-      </button>
+      </div>
     </div>
 
     <!-- Spacer for the Image -->
