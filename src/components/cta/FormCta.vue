@@ -128,6 +128,7 @@
 <script setup>
 import { useAppStore } from '@/stores/appStore';
 import { reactive } from 'vue';
+
 const appStore = useAppStore();
 const formData = reactive({
   name: '',

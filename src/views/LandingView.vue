@@ -81,7 +81,6 @@ const handleMouseLeave = (event) => {
   }
 };
 
-
 const handleBackButton = () => {
   trackExitIntent('back_button');
 };

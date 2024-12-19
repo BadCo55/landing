@@ -7,7 +7,7 @@ import router from './router'
 import './assets/styles/main.css'
 import './assets/styles/tailwind.css'
 import 'primeicons/primeicons.css'
-// import VueGtagPlugin from 'vue-gtag'
+import { useReCaptcha } from 'vue-recaptcha-v3'
 
 import PrimeVue from "primevue/config";
 import Aura from "@primevue/themes/aura";
@@ -18,6 +18,10 @@ import '@fortawesome/fontawesome-free/js/all.js';
 
 const app = createApp(App)
 const head = createHead();
+
+useReCaptcha(app, {
+    siteKey: '6Ld6yqAqAAAAAMTV9Uy14u0cuwoS61dTssVh6Emr'
+});
 
 const MyPreset = definePreset(Aura, {
     primitive: {
@@ -667,9 +671,7 @@ app.use(PrimeVue, {
         preset: MyPreset,
     },
 });
-// app.use(VueGtagPlugin, {
-//     config: { id: 'G-M1NQ4817BS' },
-// }, router);
+
 app.use(router)
 
 app.mount('#app')
