@@ -2,16 +2,18 @@
     <div class="bg-slate-50 dark:bg-slate-800 px-3 py-20 md:px-12 lg:px-20">
         <div class="text-center">
           <div class="font-bold text-slate-900 dark:text-slate-50 text-4xl mb-4">More reasons why realtors prefer us</div>
-          <div class="text-slate-700 dark:text-slate-100/80 mb-8 leading-normal">Egestas dui id ornare arcu odio. Egestas fringilla phasellus faucibus scelerisque eleifend.</div>
+          <div class="text-slate-700 dark:text-slate-100/80 mb-8 leading-normal">Make your transaction easier, every step of the way.</div>
         </div>
         <div class="lg:p-4 rounded-lg bg-slate-50 dark:bg-slate-900">
             <div class="flex flex-wrap">
                 <div class="w-full lg:w-6/12 lg:p-4">
                     <Accordion>
                         <AccordionPanel v-for="(item, index) in benefits" :key="index" :value="index">
-                            <AccordionHeader>
+                            <AccordionHeader
+                              @click="trackButtonClick('accordion_1', item.title, 'realtor_landing')"
+                            >
                                 <div class="flex items-center">
-                                    <span class="inline-flex items-center justify-center rounded-full bg-slate-300 dark:bg-slate-500 mr-2 text-slate-700 dark:text-slate-100" style="width: 2rem; height: 2rem">
+                                    <span class="inline-flex items-center justify-center rounded-full bg-slate-50 dark:bg-slate-500 mr-2 text-slate-700 dark:text-slate-100" style="width: 2rem; height: 2rem">
                                         <i :class="item.icon" />
                                     </span>
                                     <span class="text-slate-700 dark:text-slate-200">{{ item.title }}</span>
@@ -26,9 +28,11 @@
                 <div class="w-full lg:w-6/12 lg:p-4">
                     <Accordion>
                         <AccordionPanel v-for="(item, index) in benefits2" :key="index" :value="index">
-                            <AccordionHeader>
+                            <AccordionHeader
+                              @click="trackButtonClick('accordion_2', item.title, 'realtor_landing')"
+                            >
                                 <div class="flex items-center">
-                                    <span class="inline-flex items-center justify-center rounded-full bg-slate-300 dark:bg-slate-500 mr-2 text-slate-700 dark:text-slate-100" style="width: 2rem; height: 2rem">
+                                    <span class="inline-flex items-center justify-center rounded-full bg-slate-50 dark:bg-slate-500 mr-2 text-slate-700 dark:text-slate-100" style="width: 2rem; height: 2rem">
                                         <i :class="item.icon" />
                                     </span>
                                     <span class="text-slate-700 dark:text-slate-200">{{ item.title }}</span>
@@ -111,6 +115,36 @@
     },
   ];
   
+  // Flags to prevent duplicate tracking
+  const trackedEvents = new Set();
+
+  const trackButtonClick = (action, label, page) => {
+      const uniqueEventKey = `${action}_${label}`; // Unique identifier for the event
+
+      if (!trackedEvents.has(uniqueEventKey)) {
+          // Add the event to the tracked set
+          trackedEvents.add(uniqueEventKey);
+
+          // Google Analytics tracking
+          if (window.gtag) {
+              window.gtag('event', `${action}_click`, {
+                  event_category: 'Button Click',
+                  event_label: label,
+                  page_location: window.location.href,
+                  page: page,
+              });
+          }
+
+          // Facebook Pixel tracking
+          if (window.fbq) {
+              window.fbq('trackCustom', `${action}_click`, {
+                  button_label: label,
+                  page_name: page,
+                  url: window.location.href,
+              });
+          }
+      }
+  };
   
   </script>
   

@@ -42,16 +42,20 @@ function scrollTo(refName) {
     appStore.scrollToSection(refName);
 }
 const trackButtonClick = (action, label, page, scrollTarget) => {
-    console.log('Button click event triggered');
     if (window.gtag) {
-        window.gtag('event', action, {
+        window.gtag('event', `${action}_click`, {
             event_category: 'Button Click',
             event_label: label,
             page_location: window.location.href,
             page: page,
         });
-    } else {
-        console.warn('Google Analytics gtag not initialized');
+    }
+    if (window.fbq) {
+        window.fbq('trackCustom', `${action}_click`, {
+            button_label: label,
+            page_name: page,
+            url: window.location.href,
+        })
     }
     scrollTo(scrollTarget);
 }

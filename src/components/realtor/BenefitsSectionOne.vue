@@ -32,7 +32,7 @@
                 </p>
             </div>
             <div class="flex-1 text-end mt-10 lg:mt-0">
-                <Button label="Get Started" severity="warn" class="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 shadow-md" @click="scrollTo('#form-cta')"/>
+                <Button label="Get Started" severity="warn" class="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 shadow-md" @click="trackButtonClick('get_started', 'cta', 'realtor_landing', '#form-cta')" />
             </div>
         </div>
     </div>
@@ -45,6 +45,28 @@ const appStore = useAppStore();
 
 function scrollTo(refName) {
     appStore.scrollToSection(refName);
+}
+
+const trackButtonClick = (action, label, page, scrollTarget) => {
+    console.log('Button click event triggered');
+    if (window.gtag) {
+        window.gtag('event', `${action}_click`, {
+            event_category: 'Button Click',
+            event_label: label,
+            page_location: window.location.href,
+            page: page,
+        });
+        if (window.fbq) {
+            window.fbq('trackCustom', `${action}_click`, {
+                button_label: label,
+                page_name: page,
+                url: window.location.href,
+            })
+        }
+    } else {
+        console.warn('Google Analytics gtag not initialized');
+    }
+    scrollTo(scrollTarget);
 }
 
 const items = [

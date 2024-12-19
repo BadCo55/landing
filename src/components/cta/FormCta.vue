@@ -65,6 +65,7 @@
           <label for="name" class="block text-sm font-medium text-gray-700">Your Name</label>
           <input
             v-model="formData.name"
+            @focus="trackFormStart"
             type="text"
             id="name"
             class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-slate-50 text-slate-800"
@@ -78,6 +79,7 @@
             <label for="email" class="block text-sm font-medium text-gray-700 flex-wrap">Email Address</label>
             <input
               v-model="formData.email"
+              @focus="trackFormStart"
               type="email"
               id="email"
               class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-slate-50 text-slate-800"
@@ -89,6 +91,7 @@
             <label for="phone" class="block text-sm font-medium text-gray-700">Phone #</label>
             <input
               v-model="formData.phone"
+              @focus="trackFormStart"
               type="tel"
               id="phone"
               class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-slate-50 text-slate-800"
@@ -102,6 +105,7 @@
           <label for="message" class="block text-sm font-medium text-gray-700">Message</label>
           <textarea
             v-model="formData.message"
+            @focus="trackFormStart"
             id="message"
             rows="4"
             class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm bg-slate-50 text-slate-800"
@@ -133,6 +137,30 @@ const formData = reactive({
   date: '',
   utm_parameters: ''
 });
+
+let formStarted = false; // Prevent multiple triggers of form_start
+
+const trackFormStart = () => {
+  if (!formStarted) {
+    formStarted = true; // Set the flag to prevent duplicate tracking
+    
+    // Send events
+    if (window.gtag) {
+      window.gtag('event', 'form_start', {
+        event_category: 'Form Interaction',
+        event_label: 'User started filling out the form',
+        page_location: window.location.href,
+      });
+    }
+    if (window.fbq) {
+      window.fbq('trackCustom', 'form_start', {
+        form_name: 'contact_form',
+        page_location: window.location.href,
+      });
+    }
+  }
+};
+
 const submitForm = async () => {
 
   formData.date = new Date().toISOString(); // Add a date in ISO format
@@ -154,7 +182,7 @@ const submitForm = async () => {
     }
   } catch (error) {
     console.error('Error submitting form:', error);
-    alert('An error occurred while submitting the form.');
+
   }
 };
 </script>

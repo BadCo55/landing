@@ -3,6 +3,7 @@ import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
+import './assets/styles/main.css'
 import './assets/styles/tailwind.css'
 import 'primeicons/primeicons.css'
 // import VueGtagPlugin from 'vue-gtag'
@@ -465,9 +466,9 @@ const MyPreset = definePreset(Aura, {
                     hoverMutedColor: "{slate.600}"
                 },
                 content: {
-                    background: "{slate.50}",
+                    background: "{slate.200}",
                     hoverBackground: "{slate.100}",
-                    borderColor: "{slate.200}",
+                    borderColor: "{slate.50}",
                     color: "{text.color}",
                     hoverColor: "{text.hover.color}"
                 },
@@ -532,7 +533,6 @@ const MyPreset = definePreset(Aura, {
                 }
             },
             dark: {
-
                 primary: {
                     color: "{primary.400}",
                     contrastColor: "{slate.900}",
@@ -577,9 +577,9 @@ const MyPreset = definePreset(Aura, {
                     hoverMutedColor: "{slate.300}"
                 },
                 content: {
-                    background: "{slate.800}",
+                    background: "{slate.700}",
                     hoverBackground: "{slate.800}",
-                    borderColor: "{slate.700}",
+                    borderColor: "{slate.600}",
                     color: "{text.color}",
                     hoverColor: "{text.hover.color}"
                 },
@@ -646,6 +646,11 @@ const MyPreset = definePreset(Aura, {
                         color: "{slate.200}",
                     }
                 }
+            }
+        },
+        card: {
+            dark: {
+                background: "{slate.200}"
             }
         }
     }

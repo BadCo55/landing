@@ -13,13 +13,15 @@
                 <div class="w-3/4 text-start">
                   <div>
                     <Rating v-model="stars" disabled class="mb-3" />
-                    {{ testimonial.text }}
+                    <div class="dark:text-slate-300">
+                      {{ testimonial.text }}
+                    </div>
                   </div>
                   <div class="mt-5">
-                    <p class="text-lg font-bold">
+                    <p class="text-lg font-bold dark:text-slate-400">
                       {{ testimonial.name }}
                     </p>
-                    <p class="text-medium font-light">
+                    <p class="text-medium font-light dark:text-slate-300">
                       {{ testimonial.title }}
                     </p>
                   </div>
