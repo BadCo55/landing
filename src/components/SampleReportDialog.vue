@@ -7,6 +7,7 @@
                         <div class="inline-flex flex-col gap-2">
                             <label for="email" class="text-slate-50 font-semibold">Enter your email</label>
                             <InputText fluid id="email" v-model="form.email" class="!bg-white/20 !border-0 !p-4 !text-slate-50 w-80"></InputText>
+                            <small v-if="errors.email" class="text-slate-50">{{ errors.email }}</small>
                         </div>
                         <div class="flex items-center gap-4">
                             <Button label="Cancel" @click="closeCallback" type="button" text class="!p-4 w-full !text-red-200 !border !border-white/30 hover:!bg-white/10"></Button>
@@ -31,26 +32,47 @@ const form = reactive({
     email: ''
 });
 
-const handleSubmit = async () => {
+const errors = reactive({
+    email: '',
+});
 
-    form.date = new Date().toISOString(); // Add a date in ISO format
-    form.utm_parameters =  JSON.stringify(appStore.utmParams); // Include UTM params as a string
+const validateForm = () => {
+    errors.email = '';
 
-    try {
-    const response = await fetch('https://hooks.zapier.com/hooks/catch/5555872/282nv9n/', {
-        method: 'POST',
-        headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: JSON.stringify(form),
-    });
+    // Email validation regex
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (response.ok) {
-        router.push('/sample-report')
+    if (!form.email) {
+        errors.email = 'Email is required.';
+    } else if (!emailRegex.test(form.email)) {
+        errors.email = 'Please enter a valid email address.';
     }
 
+    return !errors.email; // Return true if no errors
+};
+
+const handleSubmit = async () => {
+    if (!validateForm()) return;
+
+    form.date = new Date().toISOString(); // Add a date in ISO format
+    form.utm_parameters = JSON.stringify(appStore.utmParams); // Include UTM params as a string
+
+    try {
+        const response = await fetch('https://hooks.zapier.com/hooks/catch/5555872/282nv9n/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(form),
+        });
+
+        if (response.ok) {
+            router.push('/sample-report');
+        } else {
+            console.error('Failed to submit the form');
+        }
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 };
 
