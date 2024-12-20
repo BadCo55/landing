@@ -33,15 +33,18 @@ const utmSent = sessionStorage.getItem('utm_event_sent'); // Check sessionStorag
 const sendUTMEvent = (utmParams) => {
     if (!utmSent) { // Only send UTM event if not already sent
         if (window.gtag) {
-            window.gtag('event', 'utm_tracking', {
-                utm_source: utmParams.utm_source,
-                utm_medium: utmParams.utm_medium,
-                utm_campaign: utmParams.utm_campaign,
-                utm_term: utmParams.utm_term,
-                utm_content: utmParams.utm_content,
-            });
-        }
+          window.gtag('event', 'utm_tracking', {
+            utm_source: utmParams.utm_source,
+            utm_medium: utmParams.utm_medium,
+            utm_campaign: utmParams.utm_campaign,
+            utm_term: utmParams.utm_term,
+            utm_content: utmParams.utm_content,
+          });
+        } 
         sessionStorage.setItem('utm_event_sent', 'true'); // Mark as sent
+        console.log('UTM SET');
+    } else {
+      console.log('UTM NOT SET')
     }
 };
 

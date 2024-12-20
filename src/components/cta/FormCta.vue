@@ -150,6 +150,7 @@ const trackFormStart = () => {
       window.gtag('event', 'form_start', {
         event_category: 'Form Interaction',
         event_label: 'User started filling out the form',
+        form_name: 'Form CTA',
         page_location: window.location.href,
       });
     }
@@ -177,6 +178,18 @@ const submitForm = async () => {
     });
 
     if (response.ok) {
+      if (window.gtag) {
+          window.gtag('event', 'form_submit', {
+              event_category: 'Engagement',
+              form_name: 'Sample Report Form',
+              page_location: window.location.href, // Include the current page URL
+              utm_source: appStore.utm_source || 'N/A',
+              utm_medium: appStore.utm_medium || 'N/A',
+              utm_campaign: appStore.utm_campaign || 'N/A',
+              utm_term: appStore.utm_term || 'N/A',
+              utm_content: appStore.utm_medium || 'N/A',
+          });
+      }
       window.location.href = 'https://diversifiedhomeinspections.com/thank-you-contact-us/'
     }
 

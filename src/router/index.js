@@ -32,6 +32,17 @@ const router = createRouter({
       redirect: '/404', // Redirect to the 404 route
     },
   ],
+  scrollBehavior(to, from, savedPosition) {
+    if (to.path === '/sample-report') {
+      return { top: 0 };
+    }
+    // Use saved position for browser back/forward
+    if (savedPosition) {
+      return savedPosition;
+    }
+    // Default behavior
+    return { top: 0 }
+  }
 })
 
 export default router

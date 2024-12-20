@@ -53,20 +53,28 @@ const validateForm = () => {
 
 const handleSubmit = async () => {
     if (!validateForm()) return;
-
     form.date = new Date().toISOString(); // Add a date in ISO format
     form.utm_parameters = JSON.stringify(appStore.utmParams); // Include UTM params as a string
 
     try {
         const response = await fetch('https://hooks.zapier.com/hooks/catch/5555872/282nv9n/', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
             body: JSON.stringify(form),
         });
 
         if (response.ok) {
+            if (window.gtag) {
+                window.gtag('event', 'form_submit', {
+                    event_category: 'Engagement',
+                    form_name: 'Sample Report Form',
+                    page_location: window.location.href, // Include the current page URL
+                    utm_source: appStore.utm_source || 'N/A',
+                    utm_medium: appStore.utm_medium || 'N/A',
+                    utm_campaign: appStore.utm_campaign || 'N/A',
+                    utm_term: appStore.utm_term || 'N/A',
+                    utm_content: appStore.utm_medium || 'N/A',
+                });
+            }
             router.push('/sample-report');
         } else {
             console.error('Failed to submit the form');
