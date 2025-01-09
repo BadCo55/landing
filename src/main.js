@@ -428,7 +428,6 @@ const MyPreset = definePreset(Aura, {
         },
         colorScheme: {
             light: {
-
                 primary: {
                     color: "{primary.500}",
                     contrastColor: "#ffffff",
@@ -446,7 +445,7 @@ const MyPreset = definePreset(Aura, {
                     color: "{slate.200}"
                 },
                 formField: {
-                    background: "{slate.0}",
+                    background: "#fff",
                     disabledBackground: "{slate.200}",
                     filledBackground: "{slate.50}",
                     filledHoverBackground: "{slate.50}",
@@ -537,6 +536,9 @@ const MyPreset = definePreset(Aura, {
                         focusColor: "{slate.500}",
                         activeColor: "{slate.500}"
                     }
+                },
+                divider: {
+                    color: "{slate.900}"
                 }
             },
             dark: {
@@ -557,7 +559,7 @@ const MyPreset = definePreset(Aura, {
                     color: "{slate.200}"
                 },
                 formField: {
-                    background: "{slate.950}",
+                    background: "{slate.900}",
                     disabledBackground: "{slate.700}",
                     filledBackground: "{slate.800}",
                     filledHoverBackground: "{slate.800}",
@@ -578,8 +580,8 @@ const MyPreset = definePreset(Aura, {
                     shadow: "0 0 #0000, 0 0 #0000, 0 1px 2px 0 rgba(18, 18, 23, 0.05)"
                 },
                 text: {
-                    color: "{slate.0}",
-                    hoverColor: "{slate.0}",
+                    color: "{slate.50}",
+                    hoverColor: "{slate.50}",
                     mutedColor: "{slate.400}",
                     hoverMutedColor: "{slate.300}"
                 },
@@ -652,7 +654,7 @@ const MyPreset = definePreset(Aura, {
                         background: "{slate.200}",
                         color: "{slate.200}",
                     }
-                }
+                },
             }
         },
         card: {
@@ -663,12 +665,66 @@ const MyPreset = definePreset(Aura, {
     }
 });
 
+const CustomPreset = definePreset(Aura, {
+    semantic: {
+        primary: {
+            50: "#fcf4f4",
+            100: "#f2cbcb",
+            200: "#e8a3a3",
+            300: "#de7a7a",
+            400: "#d35151",
+            500: "#c92828",
+            600: "#ab2222",
+            700: "#8d1c1c",
+            800: "#6f1616",
+            900: "#501010",
+            950: "#320a0a"
+        },
+        colorScheme: {
+            light: {
+                surface: {
+                    0: '#ffffff',
+                    50: '{slate.50}',
+                    100: '{slate.100}',
+                    200: '{slate.200}',
+                    300: '{slate.300}',
+                    400: '{slate.400}',
+                    500: '{slate.500}',
+                    600: '{slate.600}',
+                    700: '{slate.700}',
+                    800: '{slate.800}',
+                    900: '{slate.900}',
+                    950: '{slate.950}'
+                }
+            }, 
+            dark: {
+                surface: {
+                    0: '#ffffff',
+                    50: '{slate.50}',
+                    100: '{slate.100}',
+                    200: '{slate.200}',
+                    300: '{slate.300}',
+                    400: '{slate.400}',
+                    500: '{slate.500}',
+                    600: '{slate.600}',
+                    700: '{slate.700}',
+                    800: '{slate.800}',
+                    900: '{slate.900}',
+                    950: '{slate.950}'
+                },
+                formField: {
+                    background: "{slate.900}"
+                },
+            }
+        }
+    },
+});
 
 app.use(createPinia())
 app.use(head);
 app.use(PrimeVue, {
     theme: {
-        preset: MyPreset,
+        preset: CustomPreset,
     },
 });
 

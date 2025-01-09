@@ -1,19 +1,29 @@
 <template>
     <component :is="currentView" />
+    <SampleReportDialog :visible="visible" @update:visible="visible = $event" />
 </template>
 
 <script setup>
 import RealtorView from './RealtorView.vue';
 import InvestorView from './InvestorView.vue';
+import SampleReportDialog from '@/components/SampleReportDialog.vue';
 import { getUTMParams } from '@/utils/utm';
 import { onMounted, onUnmounted } from 'vue';
 import { useAppStore } from '@/stores/appStore';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
+import HomebuyerView from './HomebuyerView.vue';
 // import NotFound from './NotFound.vue';
 
 const appStore = useAppStore();
 const route = useRoute();
+
+const visible = ref(false);
+
+const showSampleReport = () => {
+    visible.value = true;
+}
+
 
 const currentView = computed(() => {
   switch (route.params.audience) {
@@ -21,8 +31,10 @@ const currentView = computed(() => {
       return RealtorView;
     case 'investor':
       return InvestorView;
+    case 'homebuyer': 
+      return HomebuyerView
     default:
-      return RealtorView;
+      return HomebuyerView;
   }
 });
 
@@ -42,10 +54,7 @@ const sendUTMEvent = (utmParams) => {
           });
         } 
         sessionStorage.setItem('utm_event_sent', 'true'); // Mark as sent
-        console.log('UTM SET');
-    } else {
-      console.log('UTM NOT SET')
-    }
+    } 
 };
 
 const trackExitIntent = (reason) => {
@@ -125,6 +134,13 @@ onMounted(() => {
   document.addEventListener('touchstart', resetInactivityTimer);
   document.addEventListener('scroll', resetInactivityTimer);
   window.addEventListener('popstate', handleBackButton);
+
+  // Check if URL requests sample report
+  if (route.query['sample-report'] === 'true') {
+    showSampleReport();
+  }
+
+
 });
 
 onUnmounted(() => {

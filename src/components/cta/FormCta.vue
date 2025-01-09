@@ -8,7 +8,7 @@
 
     <!-- Content Section: Why Choose Us -->
     <div class="relative z-10 text-white w-full md:w-1/2 md:pr-10 text-left mb-10 md:mb-0 mt-10">
-      <img src="@/assets/logo-dark.png" alt="" class="mx-auto lg:mx-0 w-[20rem] mb-10">
+      <img :src="appStore.logoDark" alt="" class="mx-auto lg:mx-0 w-[20rem] mb-10 bg-slate-900/40 p-3 rounded-xl">
 
       <h2 class="text-3xl md:text-5xl font-bold mb-6">Why Choose Us?</h2>
       <ul class="space-y-4 text-lg mb-8">
@@ -58,7 +58,10 @@
 
     <!-- Form Section -->
     <div class="relative z-10 bg-white rounded-lg shadow-lg p-6 md:p-10 w-full md:w-1/2">
-      <h3 class="text-2xl font-bold mb-6 text-red-600">Contact Us Today</h3>
+      <div class="flex flex-col lg:flex-row items-center gap-5 mb-5">
+        <h3 class="text-2xl font-bold text-red-600">Contact Us Today</h3>
+        <Button label="OR, Click Here to Get a FREE Quote!" class="!text-white !font-bold !text-xl" raised  severity="success" @click="requestQuoteClick('request_quote_click', 'cta', 'form_cta')" />
+      </div>
       <form class="space-y-6" @submit.prevent="submitForm">
         <!-- Name Field -->
         <div>
@@ -114,12 +117,12 @@
         </div>
 
         <!-- Submit Button -->
-        <button
+        <Button
           type="submit"
-          class="w-full bg-red-600 text-white font-medium py-3 rounded-md hover:bg-red-700"
+          class="w-full !text-white"
         >
           Send Message
-        </button>
+        </Button>
       </form>
     </div>
   </div>
@@ -128,8 +131,11 @@
 <script setup>
 import { useAppStore } from '@/stores/appStore';
 import { reactive } from 'vue';
+import { Button } from 'primevue';
+import { useRouter } from 'vue-router';
 
 const appStore = useAppStore();
+const router = useRouter();
 const formData = reactive({
   name: '',
   email: '',
@@ -140,6 +146,25 @@ const formData = reactive({
 });
 
 let formStarted = false; // Prevent multiple triggers of form_start
+
+const requestQuoteClick = (action, label, page) => {
+    if (window.gtag) {
+        window.gtag('event', action, {
+            category: 'Button Click',
+            label: label,
+            page_location: window.location.href,
+            page: page,
+        });
+    }
+    if (window.fbq) {
+        window.fbq('trackCustom', `${action}_click`, {
+            button_label: label,
+            page_name: page,
+            url: window.location.href,
+        })
+    }
+    router.push('/request-quote');
+}
 
 const trackFormStart = () => {
   if (!formStarted) {

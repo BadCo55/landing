@@ -44,8 +44,8 @@
       </div>
 
       <div class="flex gap-5">
-        <Button label="Get Started" class="w-full lg:w-auto"></Button>
-        <Button class="w-full lg:w-auto">
+        <Button label="Get Started" class="w-full lg:w-auto dark:!text-white"></Button>
+        <Button class="w-full lg:w-auto dark:!text-white">
           <div class="flex flex-col">
             <p>Call Now:</p>
             <p>(954) 252-9980</p>

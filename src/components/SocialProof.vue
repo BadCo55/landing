@@ -4,7 +4,7 @@
           <span class="text-slate-900 dark:text-slate-200">What Clients Are Saying About Us</span>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-10">
-        <Card v-for="(testimonial, index) in testimonials" :key="index" class="bg-slate-200">
+        <Card v-for="(testimonial, index) in testimonials" :key="index" class="!bg-slate-200 dark:!bg-slate-800">
           <template #content>
               <div class="flex gap-10 py-5 ps-5">
                 

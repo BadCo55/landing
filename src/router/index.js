@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LandingView from '@/views/LandingView.vue'
 import NotFound from '@/views/NotFound.vue'
 import SampleReport from '@/views/SampleReport.vue'
+import RequestQuoteView from '@/views/RequestQuoteView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,6 +16,11 @@ const router = createRouter({
       path: '/:audience',
       name: 'audience',
       component: LandingView,
+    },
+    {
+      path: '/request-quote',
+      name: 'quote',
+      component: RequestQuoteView,
     },
     {
       path: '/sample-report',

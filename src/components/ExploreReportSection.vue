@@ -3,7 +3,7 @@
             <div class="flex flex-col justify-center">
                 <div class="font-bold text-slate-900 dark:text-slate-50 text-3xl mb-4 text-center">Explore Our Report</div>
                 <div class="text-slate-700 dark:text-slate-50/70 text-center mb-5 leading-normal">Our reports go beyond observations to provide actionable insights and repair costs for confident decision-making.</div>
-                <Button label="Click Here to See Our Report In Action" severity="primary" class="mx-auto mb-8" @click="$emit('showSampleReport')"></Button>
+                <Button label="Click Here to See Our Report In Action" severity="primary" class="mx-auto mb-8 dark:!text-white" @click="$emit('showSampleReport')"></Button>
             </div>
             <div class="flex flex-col gap-8 max-w-7xl mx-auto">
                 <div class="flex lg:justify-center gap-4 md:gap-6 xl:gap-12 2xl:px-20">
@@ -49,7 +49,7 @@
                         <div class="flex flex-col gap-2">
                             <div class="leading-normal text-slate-600 dark:text-slate-400">
                                 <span class="text-slate-900 dark:text-slate-50 font-medium"> Quick & easy identification </span>
-                                of these key areas help you and your clients address insurance requirements swiftly.
+                                of these key areas help you address insurance requirements swiftly.
                             </div>
                             <div class="leading-normal text-slate-600 dark:text-slate-400">
                                 <span class="text-slate-900 dark:text-slate-50 font-medium"> Asterisks (*) </span>
@@ -166,7 +166,7 @@ const trackImageClick = (action, label, page) => {
             page: page,
         });
         if (window.fbq) {
-            console.log('fbq click');
+
             window.fbq('trackCustom', `${action}_click`, {
                 button_label: label,
                 page_name: page,

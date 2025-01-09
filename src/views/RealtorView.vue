@@ -26,10 +26,15 @@ import BenefitsSectionTwo from '@/components/realtor/BenefitsSectionTwo.vue';
 import FormCta from '@/components/cta/FormCta.vue';
 import SampleReportDialog from '@/components/SampleReportDialog.vue';
 import { ref } from 'vue';
+import { useHead } from '@vueuse/head';
 
-const visible = ref(false);
-const showSampleReport = () => {
-    visible.value = true;
-}
+
+
+useHead({
+    title: 'Inspections for Realtors - Diversified Home Inspections, Inc.',
+    meta: [
+        { name: 'description', content: 'See why realtors love having Diversified Home Inspections on their team.' },
+    ]
+})
 
 </script>
