@@ -33,7 +33,7 @@ const loadGoogleMapsAPI = () => {
     }
 
     const script = document.createElement('script');
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${googleMapsKey}&libraries=places`;
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${googleMapsKey}&libraries=places&loading=async`;
     script.async = true;
     script.defer = true;
 
@@ -41,7 +41,7 @@ const loadGoogleMapsAPI = () => {
     document.head.appendChild(script);
 
     script.onload = () => {
-        console.log('Google Maps API loaded successfully');
+        // console.log('Google Maps API loaded successfully');
     };
 
     script.onerror = () => {
