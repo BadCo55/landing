@@ -1401,6 +1401,12 @@ const onSubmitStep6 = () => {
                         utm_content: appStore.utm_content || 'N/A',
                     });
                 }
+                if (window.fbq) {
+                    window.fbq('trackCustom', `form_submit`, {
+                        form_name: 'Request Quote',
+                        url: window.location.href,
+                    })
+                }
             } else {
                 // Handle non-OK responses
                 const errorText = await response.text();

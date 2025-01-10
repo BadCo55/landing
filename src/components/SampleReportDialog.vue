@@ -75,6 +75,12 @@ const handleSubmit = async () => {
                     utm_content: appStore.utm_medium || 'N/A',
                 });
             }
+            if (window.fbq) {
+                window.fbq('trackCustom', `form_submit`, {
+                    form_name: 'Sample Report Form',
+                    url: window.location.href,
+                })
+            }
             router.push('/sample-report');
         } else {
             console.error('Failed to submit the form');

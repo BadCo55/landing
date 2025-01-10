@@ -206,7 +206,7 @@ const submitForm = async () => {
       if (window.gtag) {
           window.gtag('event', 'form_submit', {
               event_category: 'Engagement',
-              form_name: 'Sample Report Form',
+              form_name: 'Contact Form',
               page_location: window.location.href, // Include the current page URL
               utm_source: appStore.utm_source || 'N/A',
               utm_medium: appStore.utm_medium || 'N/A',
@@ -215,6 +215,7 @@ const submitForm = async () => {
               utm_content: appStore.utm_medium || 'N/A',
           });
       }
+
       window.location.href = 'https://diversifiedhomeinspections.com/thank-you-contact-us/'
     }
 
