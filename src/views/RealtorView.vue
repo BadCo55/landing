@@ -36,5 +36,8 @@ useHead({
         { name: 'description', content: 'See why realtors love having Diversified Home Inspections on their team.' },
     ]
 })
-
+const visible = ref(false);
+const showSampleReport = () => {
+  visible.value = true;
+}
 </script>
