@@ -3,6 +3,7 @@ import LandingView from '@/views/LandingView.vue'
 import NotFound from '@/views/NotFound.vue'
 import SampleReport from '@/views/SampleReport.vue'
 import RequestQuoteView from '@/views/RequestQuoteView.vue'
+import InsuranceInspectionView from '@/views/InsuranceInspectionView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -16,6 +17,11 @@ const router = createRouter({
       path: '/:audience',
       name: 'audience',
       component: LandingView,
+    },
+    {
+      path: '/insurance-inspection',
+      name: 'insurance-inspection',
+      component: InsuranceInspectionView,
     },
     {
       path: '/request-quote',

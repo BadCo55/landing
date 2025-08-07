@@ -13,6 +13,7 @@ import { useAppStore } from '@/stores/appStore';
 import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import HomebuyerView from './HomebuyerView.vue';
+import InsuranceInspectionView from './InsuranceInspectionView.vue';
 // import NotFound from './NotFound.vue';
 
 const appStore = useAppStore();
@@ -24,15 +25,16 @@ const showSampleReport = () => {
     visible.value = true;
 }
 
-
 const currentView = computed(() => {
   switch (route.params.audience) {
     case 'realtor':
       return RealtorView;
     case 'investor':
       return InvestorView;
-    case 'homebuyer': 
-      return HomebuyerView
+    case 'homebuyer':
+      return HomebuyerView;
+    case 'insurance-inspection':
+      return InsuranceInspectionView;
     default:
       return HomebuyerView;
   }
@@ -52,9 +54,9 @@ const sendUTMEvent = (utmParams) => {
             utm_term: utmParams.utm_term,
             utm_content: utmParams.utm_content,
           });
-        } 
+        }
         sessionStorage.setItem('utm_event_sent', 'true'); // Mark as sent
-    } 
+    }
 };
 
 const trackExitIntent = (reason) => {

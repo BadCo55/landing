@@ -14,8 +14,8 @@
                 </h1>
                 <h1 class="text-2xl lg:text-4xl font-light text-blue-600 dark:text-slate-0 mb-4 text-center lg:text-left">
                     <span v-html="heroText.subtitle"></span>
-                    <!-- Close deals faster with 
-                    <span class="text-red-600 font-medium italic">detailed & actionable</span> 
+                    <!-- Close deals faster with
+                    <span class="text-red-600 font-medium italic">detailed & actionable</span>
                     reports -->
                 </h1>
                 <p class="text-slate-800 dark:text-slate-200 leading-normal mb-8 text-center lg:text-left">
@@ -71,6 +71,7 @@ const imgPaths = {
     realtor: '/img/test-img.jpg',
     investor: '/img/investor-hero.png',
     homebuyer: '/img/homebuyer-hero.jpg',
+    'insurance-inspection': '/img/test-img.jpg',
 }
 
 const heroImgPath = computed(() => {
