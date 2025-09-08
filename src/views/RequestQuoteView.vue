@@ -1624,7 +1624,7 @@ function generatePriceQuoted(pricing) {
 }
 
 // 1) Put near the top of <script setup>
-const THANK_YOU_URL = 'https://landing.diversifiedhomeinspections.com/thank-you'
+const THANK_YOU_URL = 'https://diversifiedhomeinspections.com/thank-you-for-requesting-a-quote'
 
 function buildRedirectUrl() {
   const url = new URL(THANK_YOU_URL)
