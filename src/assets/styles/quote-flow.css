@@ -1319,3 +1319,115 @@ html:has(.campaign--quote) {
     scroll-margin-top: 190px;
   }
 }
+
+.quote-intent-choice {
+  padding: 24px;
+  margin: 24px 0;
+  border: 1px solid #e5c6c4;
+  border-left: 4px solid #c92828;
+  border-radius: 12px;
+  background: #fff8f7;
+}
+.quote-intent-choice h3 {
+  font-size: 1.2rem;
+  font-weight: 750;
+  margin: 8px 0 12px;
+}
+.quote-intent-choice > p:not(.quote-kicker) {
+  font-size: 1rem;
+  line-height: 1.65;
+  margin-bottom: 18px;
+}
+.quote-intent-choice .p-button {
+  margin-top: 8px;
+}
+
+.context-package-list {
+  display: grid;
+  gap: 16px;
+  margin-top: 25px;
+}
+.context-package-list > button {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  text-align: left;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 24px;
+  background: #fff;
+  color: #253942;
+  border: 1px solid #d4dfe5;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.context-package-list > button:hover {
+  border-color: #b03932;
+  background: #fff9f8;
+}
+.context-package-list strong {
+  display: block;
+  font-size: 1.125rem;
+  font-weight: 750;
+}
+.context-package-list span span {
+  display: block;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #657681;
+  margin-top: 10px;
+}
+.quote-flow .quote-scope-note,
+.quote-flow .quote-office-note {
+  font-size: 0.9375rem;
+  line-height: 1.75;
+  color: #5d707c;
+  margin: 20px 0;
+  padding: 18px;
+  border-radius: 10px;
+  background: #eff4f6;
+}
+.maintenance-priorities {
+  display: grid;
+  gap: 10px;
+  padding: 22px;
+  margin-bottom: 28px;
+  background: #f0f5f6;
+  border-radius: 12px;
+}
+.maintenance-priorities label {
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+.maintenance-priorities select,
+.maintenance-priorities textarea {
+  width: 100%;
+  font-size: 1rem;
+  border: 1px solid #ccd8df;
+  border-radius: 8px;
+  padding: 12px;
+  background: #fff;
+}
+.maintenance-priorities textarea {
+  margin-bottom: 0;
+}
+.maintenance-priorities label:not(:first-child) {
+  margin-top: 12px;
+}
+@media (max-width: 1050px) {
+  .quote-flow .quote-steps {
+    grid-template-columns: repeat(var(--quote-step-count, 6), minmax(0, 1fr));
+  }
+}
+@media (max-width: 540px) {
+  .context-package-list > button {
+    padding: 20px;
+  }
+  .quote-flow .quote-scope-note,
+  .quote-flow .quote-office-note {
+    font-size: 1rem;
+  }
+  .maintenance-priorities {
+    padding: 18px;
+  }
+}

@@ -1,5 +1,5 @@
 <script setup>
-import { nextTick, reactive, ref, watch } from 'vue'
+import { computed, nextTick, reactive, ref, watch } from 'vue'
 import Icon from './Icon.vue'
 import { useAppStore } from '@/stores/appStore'
 import {
@@ -10,7 +10,9 @@ import {
   trackLead,
   validateLead,
 } from '@/utils/campaign'
+import { inspectionQuoteLink } from '@/utils/inspectionIntent'
 const props = defineProps({
+  inspectionIntent: { type: String, default: '' },
   service: { type: String, default: 'I’m not sure — help me choose' },
   audience: { type: String, default: 'homebuyer' },
   initialDetails: { type: Object, default: () => ({}) },
@@ -18,6 +20,7 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:service', 'resume-quote'])
 const store = useAppStore()
+const quoteTo = computed(() => inspectionQuoteLink(props.inspectionIntent))
 const form = reactive({
   name: props.initialDetails.name || '',
   email: props.initialDetails.email || '',
@@ -61,7 +64,10 @@ async function submit() {
   try {
     if (!preview) await sendLead(createLeadPayload(form, store.utmParams, props.audience))
     status.value = preview ? 'preview' : 'success'
-    if (!preview) trackLead('Callback Request', form.service, store.utmParams)
+    if (!preview)
+      trackLead('Callback Request', form.service, store.utmParams, {
+        inspection: props.inspectionIntent,
+      })
     await nextTick()
     statusElement.value?.focus()
   } catch {
@@ -113,7 +119,12 @@ async function submit() {
         class="text-link callback-resume"
         @click="emit('resume-quote')"
       >
-        Continue my detailed quote <Icon name="arrow" />
+        {{
+          inspectionIntent === 'progressive'
+            ? 'Continue my project request'
+            : 'Continue my detailed quote'
+        }}
+        <Icon name="arrow" />
       </button>
     </template>
     <form v-else ref="formElement" @submit.prevent="submit" @focusin="start" novalidate>
@@ -188,6 +199,10 @@ async function submit() {
             :aria-invalid="!!errors.service"
           >
             <option>General home inspection</option>
+            <option>Yearly maintenance inspection</option>
+            <option>Insurance inspections</option>
+            <option>Progressive construction inspection</option>
+            <option>New construction final inspection</option>
             <option>4-point inspection</option>
             <option>Wind mitigation</option>
             <option>Roof certification</option>
@@ -258,12 +273,26 @@ async function submit() {
         </p>
       </fieldset>
       <div class="detailed-quote-link">
-        Ready for your inspection price?
+        {{
+          inspectionIntent === 'progressive'
+            ? 'Ready to share your project details?'
+            : 'Ready for your inspection price?'
+        }}
         <button v-if="inQuoteBuilder" type="button" @click="emit('resume-quote')">
-          Continue my detailed quote <Icon name="diagonal" />
+          {{
+            inspectionIntent === 'progressive'
+              ? 'Continue my project request'
+              : 'Continue my detailed quote'
+          }}
+          <Icon name="diagonal" />
         </button>
-        <RouterLink v-else to="/request-quote"
-          >Build my inspection quote <Icon name="diagonal"
+        <RouterLink v-else :to="quoteTo"
+          >{{
+            inspectionIntent === 'progressive'
+              ? 'Request a project review'
+              : 'Build my inspection quote'
+          }}
+          <Icon name="diagonal"
         /></RouterLink>
       </div>
     </form>

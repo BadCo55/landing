@@ -25,8 +25,9 @@ import SiteFooter from '@/components/campaign/SiteFooter.vue'
       </p>
       <h2>Service providers</h2>
       <p>
-        Form information is transmitted through Zapier to support our office workflow. The detailed
-        estimate tool uses email delivery services to send your quote. Our own analytics events do
+        Form information is transmitted through Zapier to support our office workflow. Inspection
+        requests are reviewed by our team, who will follow up about scope, pricing and scheduling.
+        The site does not generate or send an automatic customer quote. Our own analytics events do
         not include the name, email, phone number, or property address you enter in the form.
       </p>
       <h2>Contact us</h2>

@@ -1,7 +1,7 @@
 <template>
   <div class="quote-builder" id="form-container">
     <p v-if="isPreview" class="preview-note quote-preview">
-      Preview mode: this tool will not send a real request or email.
+      Preview mode: this tool will not send a real request.
     </p>
     <div v-if="submissionError" class="form-error" role="alert">
       {{ submissionError }} <a href="tel:+19542529980">(954) 252-9980</a>
@@ -76,6 +76,7 @@
     </details>
     <BasicDetailsOption
       v-show="step < 7"
+      :inspection-intent="inspectionIntent"
       :initial-details="{
         name: `${form.step1.first_name} ${form.step1.last_name}`.trim(),
         email: form.step1.email,
@@ -90,15 +91,19 @@
         <div class="quote-rail">
           <p class="quote-kicker">MADE FOR YOUR PROPERTY</p>
           <h2>Your inspection,<br />step by step.</h2>
-          <ol class="quote-steps" aria-label="Quote steps">
+          <ol
+            :style="{ '--quote-step-count': totalSteps }"
+            class="quote-steps"
+            aria-label="Quote steps"
+          >
             <li
               v-for="(item, index) in quoteSteps"
               :key="item.title"
-              :class="{ 'is-current': step === index + 1, 'is-complete': step > index + 1 }"
-              :aria-current="step === index + 1 ? 'step' : undefined"
+              :class="{ 'is-current': step === item.id, 'is-complete': step > item.id }"
+              :aria-current="step === item.id ? 'step' : undefined"
             >
               <span class="quote-step-number" aria-hidden="true"
-                ><i v-if="step > index + 1" class="pi pi-check"></i
+                ><i v-if="step > item.id" class="pi pi-check"></i
                 ><template v-else>{{ String(index + 1).padStart(2, '0') }}</template></span
               >
               <div>
@@ -107,7 +112,7 @@
               </div>
             </li>
           </ol>
-          <p class="quote-rail-note">A few details now. A quote built around your home.</p>
+          <p class="quote-rail-note">A detailed request, reviewed by our office team.</p>
         </div>
 
         <div class="quote-support">
@@ -131,8 +136,8 @@
       >
         <div class="quote-progress-heading">
           <span
-            >STEP {{ String(step).padStart(2, '0') }}
-            <span class="quote-step-total">/ 06</span></span
+            >STEP {{ String(currentStepIndex + 1).padStart(2, '0') }}
+            <span class="quote-step-total">/ {{ String(totalSteps).padStart(2, '0') }}</span></span
           ><strong>{{ progress }}<span>%</span></strong>
         </div>
         <ProgressBar
@@ -141,9 +146,11 @@
           aria-label="Inspection quote progress"
           class="quote-progress-track"
         />
-        <h2 id="quote-step-title">{{ quoteSteps[step - 1].title }}</h2>
+        <h2 id="quote-step-title">{{ currentStep.title }}</h2>
         <template v-if="step === 1">
-          <p class="quote-step-description">Tell us where to send your inspection quote.</p>
+          <p class="quote-step-description">
+            Tell us how our office can reach you about your inspection request.
+          </p>
           <Form v-slot="$form" :resolver :initialValues="form.step1" @submit="onSubmitStep1">
             <div class="quote-fields quote-contact-fields">
               <div class="flex flex-col">
@@ -390,6 +397,25 @@
           >
             <div class="quote-features">
               <div class="quote-features-layout">
+                <div v-if="inspectionIntent === 'maintenance'" class="maintenance-priorities">
+                  <label for="maintenance_priority">What brings you in for a yearly check?</label>
+                  <select id="maintenance_priority" v-model="form.step3.maintenance_priority">
+                    <option value="">Choose a priority (optional)</option>
+                    <option>Routine yearly condition check</option>
+                    <option>I have noticed a change or concern</option>
+                    <option>I am planning repairs or improvements</option>
+                  </select>
+                  <label for="maintenance_notes"
+                    >Any areas you’d like us to focus on? (optional)</label
+                  >
+                  <textarea
+                    id="maintenance_notes"
+                    v-model="form.step3.maintenance_notes"
+                    maxlength="2000"
+                    rows="3"
+                    placeholder="Recent leaks, aging systems, repairs, or questions about the home"
+                  ></textarea>
+                </div>
                 <div class="quote-feature-choices">
                   <div>
                     <Checkbox binary inputId="pool" v-model="form.step3.pool" />
@@ -494,7 +520,20 @@
               </p>
             </div>
           </Message>
-          <div class="quote-packages">
+          <div v-if="intentContext" class="context-package-list">
+            <button
+              v-for="item in contextualPackages"
+              :key="item.key"
+              type="button"
+              @click="onSubmitStep4(item.key)"
+            >
+              <span
+                ><strong>{{ item.label }}</strong
+                ><span>{{ item.description }}</span></span
+              ><i class="pi pi-arrow-right" aria-hidden="true"></i>
+            </button>
+          </div>
+          <div v-else class="quote-packages">
             <Card class="quote-package">
               <template #content>
                 <div class="quote-package-heading">
@@ -819,18 +858,33 @@
         </template>
         <template v-if="step === 5">
           <p class="quote-step-description">
-            Review your selected inspections. Add or remove services to make this quote your own.
+            Review your inspections and any optional recommendations. Our office will review your
+            request and confirm the scope and price with you.
           </p>
           <Message severity="warn" class="mb-5"
             >If you would like more information on any single service, click the question mark next
             to it.</Message
           >
+          <AgeRecommendations
+            :year-built="form.step2.year_built"
+            :intent="inspectionIntent"
+            :selected="form.step5.selected_services"
+            @toggle="toggleRecommended"
+            @info="showServiceInfoDialog"
+          />
+          <p v-if="insuranceFlow" class="quote-scope-note">
+            Choose the reports your insurer requested. These reports are separate services; a
+            general home inspection is a different scope.
+          </p>
+          <p v-if="serviceSelectionError" class="form-error" role="alert">
+            {{ serviceSelectionError }}
+          </p>
           <div class="quote-services">
             <div
               class="quote-service"
-              :class="{ 'is-selected': value }"
-              v-for="(value, service, index) in form.step5.selected_services"
-              :key="index"
+              :class="{ 'is-selected': form.step5.selected_services[service] }"
+              v-for="service in visibleServiceKeys"
+              :key="service"
             >
               <div class="quote-service-row">
                 <div class="quote-service-content">
@@ -842,58 +896,6 @@
                     />
                     <span class="ms-2 dark:text-gray-400">{{ snakeToNormal(service) }}</span>
                   </label>
-                  <Message
-                    v-if="form.step2.year_built < 1973 && service === 'drain_pipe_inspection'"
-                    severity="error"
-                    class="mt-2"
-                  >
-                    <div class="inline-flex items-center">
-                      <i class="pi pi-exclamation-triangle me-3"></i>
-                      <div>
-                        <p class="text-xs mb-2">
-                          This property was built before 1973 and may have cast-iron drain pipes.
-                        </p>
-                        <p class="text-xs">We recommend a cast-iron drainpipe camera inspection.</p>
-                      </div>
-                    </div>
-                  </Message>
-                  <Message
-                    v-if="form.step2.year_built < 1980 && service === 'asbestos_inspection'"
-                    severity="error"
-                    class="mt-2"
-                  >
-                    <div class="inline-flex items-center">
-                      <i class="pi pi-exclamation-triangle me-3"></i>
-                      <div>
-                        <p class="text-xs mb-2">
-                          This property was built before 1980 and may have asbestos-containing
-                          building materials.
-                        </p>
-                        <p class="text-xs">
-                          We recommend a asbestos inspection, but it may be better to wait for your
-                          inspector's recommendation.
-                        </p>
-                      </div>
-                    </div>
-                  </Message>
-                  <Message
-                    v-if="form.step2.year_built < 1978 && service === 'lead_based_paint_inspection'"
-                    severity="error"
-                    class="mt-2"
-                  >
-                    <div class="inline-flex items-center">
-                      <i class="pi pi-exclamation-triangle me-3"></i>
-                      <div>
-                        <p class="text-xs mb-2">
-                          This property was built before 1978 and may have lead-based paint.
-                        </p>
-                        <p class="text-xs">
-                          We recommend a lead-based paint inspection, but it may be better to wait
-                          for your inspector's recommendation.
-                        </p>
-                      </div>
-                    </div>
-                  </Message>
                   <Message
                     v-if="form.step3.extra_structure && service === 'extra_structure_inspection'"
                     severity="info"
@@ -967,7 +969,8 @@
           <Message severity="info" class="mb-5">
             <div class="flex items-center">
               <i class="pi pi-info-circle me-2"></i>
-              Not sure? Don't worry! You can skip this step by clicking 'Get Your Quote' below.
+              Dates are optional. Our office will confirm timing with you after reviewing the
+              request.
             </div>
           </Message>
           <div class="quote-fields quote-date-fields">
@@ -1043,13 +1046,17 @@
           <div class="quote-actions">
             <Button label="Back" class="quote-back" icon="pi pi-arrow-left" @click="goBack" />
             <Button
-              label="Get Your Quote"
+              label="Send request to our office"
               icon="pi pi-check-circle"
               iconPos="right"
               type="submit"
               @click="onSubmitStep6"
             />
           </div>
+          <p class="quote-office-note">
+            Your request goes to our office team. We’ll contact you to confirm scope, pricing and
+            availability. No automatic quote email is sent to you.
+          </p>
         </template>
       </section>
     </div>
@@ -1073,11 +1080,12 @@
           {{
             isPreview
               ? 'No request was sent and no conversion was recorded.'
-              : 'Your inspection quote request has been submitted.'
+              : 'Your detailed inspection request has been sent to our office.'
           }}
         </p>
         <p v-if="!isPreview" class="text-xl">
-          Please check your email for your quote. Our team will confirm availability.
+          Our team will review the details and contact you about scope, pricing and availability.
+          Your inspection is not booked until confirmed.
         </p>
 
         <div class="mt-5 dark:text-surface-400">
@@ -1144,6 +1152,13 @@
 import Button from 'primevue/button'
 import ServiceInfoDialog from '@/components/campaign/ServiceInfoDialog.vue'
 import BasicDetailsOption from '@/components/campaign/BasicDetailsOption.vue'
+import AgeRecommendations from '@/components/campaign/AgeRecommendations.vue'
+import {
+  getQuoteStepIds,
+  isInsuranceIntent,
+  validPropertyYear,
+  createScopeReviewPayload,
+} from '@/utils/inspectionRecommendations'
 import InputText from 'primevue/inputtext'
 import {
   ProgressBar,
@@ -1164,10 +1179,14 @@ import { onMounted, onUnmounted, reactive, ref, computed, nextTick, watch } from
 import { isProductionHost, sendLead, trackLead } from '@/utils/campaign'
 import { loadGoogleMaps } from '@/utils/maps'
 import { useAppStore } from '@/stores/appStore'
-import { calculateInspectionPrice } from '@/utils/inspectionPriceCalculator.js'
-import { useRoute } from 'vue-router'
+import {
+  inspectionContext,
+  singleServicePackages,
+  isInsurancePackage,
+} from '@/utils/inspectionIntent'
+const props = defineProps({ inspectionIntent: { type: String, default: '' } })
+const intentContext = computed(() => inspectionContext(props.inspectionIntent))
 
-const route = useRoute()
 const appStore = useAppStore()
 const serviceInfoDialogVisible = ref(false)
 const selectedInfoService = ref(null)
@@ -1176,8 +1195,6 @@ const minDate = ref(new Date())
 const today = new Date()
 const minTime = ref(new Date(today.setHours(8, 0, 0, 0))) // 8:00 AM
 const maxTime = ref(new Date(today.setHours(18, 0, 0, 0))) // 6:00 PM
-
-const discount = route.query.discount
 
 // Get current year for year built input
 const currentYear = new Date().getFullYear()
@@ -1228,6 +1245,9 @@ const services = [
 ]
 
 const packages = {
+  maintenance: ['general_inspection'],
+  commercial: ['general_inspection', 'roof_inspection', 'termite_inspection'],
+  ...singleServicePackages,
   basic: [
     'general_inspection',
     'roof_inspection',
@@ -1287,7 +1307,7 @@ const step5Services = computed(() => {
   const selectedPackage = packages[form.step4.selected_package] || []
   let dynamicServices = []
 
-  if (form.step4.selected_package !== 'insurance_only') {
+  if (!isInsurancePackage(form.step4.selected_package)) {
     dynamicServices = getDynamicServices(form.step3)
   }
 
@@ -1332,6 +1352,8 @@ const form = reactive({
     seawall: false,
     crawlspace: false,
     well_water: false,
+    maintenance_priority: '',
+    maintenance_notes: '',
     extra_structure_details: '',
     seawall_length: '',
   },
@@ -1385,8 +1407,8 @@ const propertyTypes = [
   { key: 'commercial', value: 'Commercial Property' },
 ]
 
-const quoteSteps = [
-  { short: 'Contact', title: 'Let’s start with you.', detail: 'Where to send your quote' },
+const baseQuoteSteps = [
+  { short: 'Contact', title: 'Let’s start with you.', detail: 'How our office can reach you' },
   { short: 'Property', title: 'Tell us about the property.', detail: 'Address, size and age' },
   {
     short: 'Features',
@@ -1402,193 +1424,135 @@ const quoteSteps = [
   { short: 'Dates', title: 'When works for you?', detail: 'Share your preferred dates' },
 ]
 
+const insuranceFlow = computed(() => isInsuranceIntent(props.inspectionIntent))
+const stepIds = computed(() => getQuoteStepIds(props.inspectionIntent))
+const quoteSteps = computed(() =>
+  stepIds.value.map((id) => ({
+    ...baseQuoteSteps[id - 1],
+    id,
+    ...(id === 3 && props.inspectionIntent === 'maintenance'
+      ? { title: 'Your home, year after year.', detail: 'Features and maintenance priorities' }
+      : {}),
+    ...(id === 3 && props.inspectionIntent === 'commercial'
+      ? { title: 'Property features and access.' }
+      : {}),
+    ...(id === 5 && insuranceFlow.value
+      ? { title: 'The reports your insurer needs.', detail: 'Choose and review your reports' }
+      : {}),
+  })),
+)
+const currentStepIndex = computed(() => stepIds.value.indexOf(step.value))
+const currentStep = computed(() => quoteSteps.value[currentStepIndex.value] || baseQuoteSteps[5])
+const visibleServiceKeys = computed(() =>
+  insuranceFlow.value
+    ? ['wind_mitigation', 'four_point', 'roof_inspection']
+    : Object.keys(form.step5.selected_services),
+)
+const serviceSelectionError = ref('')
+const contextualPackages = computed(() => {
+  if (props.inspectionIntent === 'maintenance')
+    return [
+      {
+        key: 'maintenance',
+        label: 'Yearly maintenance review',
+        description:
+          'Start with a general condition review. Add the features and services you want the team to assess. Scope and pricing are confirmed by the office.',
+      },
+    ]
+  if (props.inspectionIntent === 'commercial')
+    return [
+      {
+        key: 'commercial',
+        label: 'Commercial property inspection',
+        description:
+          'General, roof and termite inspection services. Confirm the property type and total area, then review any additional scope.',
+      },
+    ]
+  if (props.inspectionIntent === 'new-construction' && newConstructionEligible.value)
+    return [
+      {
+        key: 'new_construction',
+        label: 'Completed new-home inspection',
+        description:
+          'General and cosmetic conditions, roof, termite and wind mitigation. Review the selected services in the next step.',
+      },
+    ]
+  return [
+    {
+      key: 'basic',
+      label: 'General inspection',
+      description:
+        'Start with a broad property assessment, including roof, termite and insurance inspection services. Adjust your choices next.',
+    },
+    {
+      key: 'premium',
+      label: 'General + additional testing',
+      description:
+        'The general package plus mold air samples and thermal imaging. Confirm the testing you want in the next step.',
+    },
+    {
+      key: 'pre_listing',
+      label: 'Pre-listing inspection',
+      description: 'General, roof and termite inspection services for a property you plan to sell.',
+    },
+  ]
+})
+function nextStep() {
+  step.value = stepIds.value[currentStepIndex.value + 1] ?? 6
+  nextTick(() => scrollTo('#progress-bar'))
+}
+function toggleRecommended(service) {
+  form.step5.selected_services[service] = !form.step5.selected_services[service]
+}
+
 const step = ref(1)
 const propertySelected = ref(false)
-const totalSteps = 6
+const totalSteps = computed(() => stepIds.value.length)
 
 const progress = computed(() => {
-  return Math.round((step.value / totalSteps) * 100)
+  return Math.round(((currentStepIndex.value + 1) / totalSteps.value) * 100)
 })
 
 const onSubmitStep1 = ({ valid }) => {
   if (valid) {
-    step.value++
+    nextStep()
     scrollTo('#form-container')
   }
 }
 
 const onSubmitStep2 = ({ valid }) => {
   if (valid) {
-    step.value++
+    if (insuranceFlow.value && !form.step4.selected_package) {
+      form.step4.selected_package = 'insurance_request'
+      if (props.inspectionIntent === 'wind') form.step5.selected_services.wind_mitigation = true
+      if (props.inspectionIntent === 'four-point') form.step5.selected_services.four_point = true
+    }
+    nextStep()
     nextTick(() => scrollTo('#form-container'))
   }
 }
 
 const onSubmitStep3 = ({ valid }) => {
   if (valid) {
-    step.value++
+    nextStep()
     nextTick(() => scrollTo('#progress-bar'))
   }
 }
 
 const onSubmitStep4 = (selectedPackage) => {
-  form.step4.selected_package = selectedPackage
-
-  // Recalculate selected services based on package and dynamic conditions
-  step5Services.value // This triggers the `computed` logic to update `step5.selected_services`.
-
-  step.value++
-  nextTick(() => scrollTo('#progress-bar'))
+  if (form.step4.selected_package !== selectedPackage) {
+    form.step4.selected_package = selectedPackage
+    step5Services.value
+  }
+  nextStep()
 }
-
 const onSubmitStep5 = () => {
-  step.value++
-  nextTick(() => scrollTo('#progress-bar'))
-}
-
-// Generate HTML for team email
-function generateContactInformation(step1) {
-  return `
-        <table border="1" cellspacing="0" cellpadding="5" style="border-collapse: collapse; width: 100%;">
-            <tr><th colspan="2" style="text-align: left; background-color: #f2f2f2;">Contact Information</th></tr>
-            <tr><td>First Name</td><td>${step1.first_name || 'N/A'}</td></tr>
-            <tr><td>Last Name</td><td>${step1.last_name || 'N/A'}</td></tr>
-            <tr><td>Email</td><td>${step1.email || 'N/A'}</td></tr>
-            <tr><td>Phone Number</td><td>${step1.phone_number || 'N/A'}</td></tr>
-        </table>
-    `
-}
-
-function generatePropertyInformation(step2) {
-  return `
-        <table border="1" cellspacing="0" cellpadding="5" style="border-collapse: collapse; width: 100%;">
-            <tr><th colspan="2" style="text-align: left; background-color: #f2f2f2;">Property Information</th></tr>
-            <tr><td>Street Address</td><td>${step2.street_address || 'N/A'}</td></tr>
-            <tr><td>Unit Number</td><td>${step2.unit_number || 'N/A'}</td></tr>
-            <tr><td>City</td><td>${step2.city || 'N/A'}</td></tr>
-            <tr><td>State</td><td>${step2.state || 'N/A'}</td></tr>
-            <tr><td>County</td><td>${step2.county || 'N/A'}</td></tr>
-            <tr><td>Zip Code</td><td>${step2.zip_code || 'N/A'}</td></tr>
-            <tr><td>Property Type</td><td>${step2.property_type.value || 'N/A'}</td></tr>
-            <tr><td>Year Built</td><td>${step2.year_built || 'N/A'}</td></tr>
-            <tr><td>Square Footage</td><td>${step2.square_footage || 'N/A'}</td></tr>
-        </table>
-    `
-}
-
-function generateExtraFeatures(step3) {
-  const features = Object.entries(step3)
-    .filter(([key, value]) => value === true)
-    .map(([key]) => `<tr><td>${snakeToNormal(key)}</td><td>Yes</td></tr>`)
-    .join('')
-  return `
-        <table border="1" cellspacing="0" cellpadding="5" style="border-collapse: collapse; width: 100%;">
-            <tr><th colspan="2" style="text-align: left; background-color: #f2f2f2;">Extra Property Features</th></tr>
-            ${features || '<tr><td colspan="2">None</td></tr>'}
-        </table>
-    `
-}
-
-function generateSelectedPackage(step4) {
-  return `
-        <table border="1" cellspacing="0" cellpadding="5" style="border-collapse: collapse; width: 100%;">
-            <tr><th style="text-align: left; background-color: #f2f2f2;">Selected Package</th></tr>
-            <tr><td>${step4.selected_package || 'N/A'}</td></tr>
-        </table>
-    `
-}
-
-function generateSelectedServices(step5) {
-  const services = Object.entries(step5.selected_services)
-    .filter(([key, value]) => value === true)
-    .map(([key]) => `<tr><td>${snakeToNormal(key)}</td></tr>`)
-    .join('')
-  return `
-        <table border="1" cellspacing="0" cellpadding="5" style="border-collapse: collapse; width: 100%;">
-            <tr><th style="text-align: left; background-color: #f2f2f2;">Selected Services</th></tr>
-            ${services || '<tr><td>None</td></tr>'}
-        </table>
-    `
-}
-
-function formatDateTime(dateString) {
-  if (!dateString) return 'N/A'
-  const date = new Date(dateString)
-
-  // Extract date components
-  const day = date.getDate().toString().padStart(2, '0')
-  const month = (date.getMonth() + 1).toString().padStart(2, '0') // Months are zero-indexed
-  const year = date.getFullYear()
-
-  // Extract time components
-  let hours = date.getHours()
-  const minutes = date.getMinutes().toString().padStart(2, '0')
-  const ampm = hours >= 12 ? 'PM' : 'AM'
-  hours = hours % 12 || 12 // Convert 24-hour time to 12-hour time
-
-  // Combine date and time
-  return `${month}/${day}/${year} ${hours}:${minutes} ${ampm}`
-}
-
-function generatePreferredDates(step6) {
-  return `
-        <table border="1" cellspacing="0" cellpadding="5" style="border-collapse: collapse; width: 100%;">
-            <tr><th colspan="2" style="text-align: left; background-color: #f2f2f2;">Preferred Dates</th></tr>
-            <tr><td>Date 1</td><td>${formatDateTime(step6.date_1)}</td></tr>
-            <tr><td>Date 2</td><td>${formatDateTime(step6.date_2)}</td></tr>
-            <tr><td>Date 3</td><td>${formatDateTime(step6.date_3)}</td></tr>
-            <tr><td>Date 4</td><td>${formatDateTime(step6.date_4)}</td></tr>
-        </table>
-    `
-}
-
-function generatePriceQuoted(pricing) {
-  const baseBreakdownRows = pricing.breakdown.baseInspection
-    .map((item) => `<tr><td>${item.description}</td><td>${item.amount || 'N/A'}</td></tr>`)
-    .join('')
-
-  const addOnBreakdownRows = pricing.breakdown.addOns
-    .map((item) => `<tr><td>${item.description}</td><td>${item.amount || 'N/A'}</td></tr>`)
-    .join('')
-
-  return `
-        <table border="1" cellspacing="0" cellpadding="5" style="border-collapse: collapse; width: 100%;">
-            <tr><th colspan="2" style="text-align: left; background-color: #f2f2f2;">Price Quoted</th></tr>
-            <tr><td style="background-color: #f2f2f2;"><strong>Base Inspection Fee</strong></td><td style="background-color: #f2f2f2;">${pricing.baseInspectionFee || 'N/A'}</td></tr>
-            ${baseBreakdownRows}
-            <tr><td style="background-color: #f2f2f2;"><strong>Add On Service Cost</strong></td><td style="background-color: #f2f2f2;">${pricing.addOnServiceCost || 'N/A'}</td></tr>
-            ${addOnBreakdownRows}
-            <tr><td style="background-color: #f2f2f2;"><strong>Total Fee</strong></td><td style="background-color: #f2f2f2;">${pricing.totalFee || 'N/A'}</td></tr>
-        </table>
-    `
-}
-
-// 1) Put near the top of <script setup>
-const THANK_YOU_URL = 'https://diversifiedhomeinspections.com/thank-you-for-requesting-a-quote'
-
-function buildRedirectUrl() {
-  const url = new URL(THANK_YOU_URL)
-  // Preserve UTM params if you have them in appStore
-  ;[
-    'utm_source',
-    'utm_medium',
-    'utm_campaign',
-    'utm_term',
-    'utm_content',
-    'gclid',
-    'gbraid',
-    'wbraid',
-    'msclkid',
-    'fbclid',
-  ].forEach((k) => {
-    if (appStore.utmParams?.[k]) url.searchParams.set(k, appStore.utmParams[k])
-  })
-  return url.toString()
-}
-
-function redirectNow() {
-  // replace() prevents the user from re-submitting by pressing Back
-  window.location.replace(buildRedirectUrl())
+  if (!Object.values(form.step5.selected_services).some(Boolean)) {
+    serviceSelectionError.value = 'Choose at least one inspection service to continue.'
+    return
+  }
+  serviceSelectionError.value = ''
+  nextStep()
 }
 
 const submissionError = ref('')
@@ -1597,92 +1561,28 @@ const isPreview = !isProductionHost(window.location.hostname)
 
 const onSubmitStep6 = async () => {
   if (isSubmitting.value) return
+  if (!Object.values(form.step5.selected_services).some(Boolean)) {
+    step.value = 5
+    serviceSelectionError.value = 'Choose at least one inspection service to continue.'
+    return
+  }
   isSubmitting.value = true
   submissionError.value = ''
   step.value = 7
-
-  const isCommercial = form.step2.property_type.key === 'commercial'
-
-  const inspectionFee = calculateInspectionPrice({
-    propertyType: form.step2.property_type.key,
-    squareFootage: form.step2.square_footage,
-    seawallLength: form.step3.seawall_length,
-    bundle: form.step4.selected_package,
-    services: form.step5.selected_services,
-    zipCode: form.step2.zip_code,
-    isCommercial: isCommercial,
-  })
-
-  const fullAddress =
-    form.step2.street_address +
-    (form.step2.unit_number ? ' Unit # ' + form.step2.unit_number : '') +
-    ', ' +
-    form.step2.city +
-    ', ' +
-    form.step2.state +
-    ' ' +
-    form.step2.zip_code
-
-  const filteredServices = Object.keys(form.step5.selected_services)
-    .filter((serviceKey) => form.step5.selected_services[serviceKey])
-    .map((serviceKey) => snakeToNormal(serviceKey))
-
-  const servicesListHTML = `<ul>${filteredServices.map((service) => `<li>${service}</li>`).join('')}</ul>`
-
-  // Generate HTML for team email
-  const htmlContent = `
-        <div style="margin-bottom: 20px;">
-            ${generateContactInformation(form.step1)}
-        </div>
-        <div style="margin-bottom: 20px;">
-            ${generatePropertyInformation(form.step2)}
-        </div>
-        <div style="margin-bottom: 20px;">
-            ${generateExtraFeatures(form.step3)}
-        </div>
-        <div style="margin-bottom: 20px;">
-            ${generateSelectedPackage(form.step4)}
-        </div>
-        <div style="margin-bottom: 20px;">
-            ${generateSelectedServices(form.step5)}
-        </div>
-        <div style="margin-bottom: 20px;">
-            ${generatePreferredDates(form.step6)}
-        </div>
-        <div style="margin-bottom: 20px;">
-            ${generatePriceQuoted(inspectionFee)}
-        </div>
-    `
-
-  const emailVariables = [
-    {
-      email: form.step1.email,
-      substitutions: {
-        first_name: form.step1.first_name,
-        property_address: fullAddress,
-        square_footage: Number(form.step2.square_footage).toLocaleString(),
-        services: servicesListHTML,
-        quote: '$' + Number(inspectionFee.totalFee).toFixed(2),
-      },
-    },
-  ]
-
-  const payload = {
-    teamEmail: htmlContent,
-    mailersend: emailVariables,
-    inspectionFee: inspectionFee,
-  }
-
-  payload.utm_parameters = JSON.stringify(appStore.utmParams)
   try {
-    if (isPreview) {
-      step.value = 8
-      return
+    if (!isPreview) {
+      // All detailed requests use the office contact workflow. Never invoke the client quote-email Zap.
+      const payload = createScopeReviewPayload(form, props.inspectionIntent, appStore.utmParams)
+      await sendLead(payload)
+      trackLead(
+        'Request Quote Form',
+        intentContext.value?.label || 'Detailed inspection request',
+        appStore.utmParams,
+        { inspection: props.inspectionIntent },
+      )
     }
-    await sendLead(payload, fetch, 'https://hooks.zapier.com/hooks/catch/5555872/2zr4pdb/')
     step.value = 8
-    trackLead('Request Quote Form', 'Detailed estimate', appStore.utmParams)
-    setTimeout(redirectNow, 350)
+    nextTick(() => scrollTo('#form-container'))
   } catch {
     step.value = 6
     submissionError.value =
@@ -1694,24 +1594,24 @@ const onSubmitStep6 = async () => {
 }
 
 const goBack = () => {
-  step.value--
+  step.value = stepIds.value[Math.max(0, currentStepIndex.value - 1)]
   nextTick(() => scrollTo('#form-container'))
 }
 
 const resolver = ({ values }) => {
   const errors = {}
 
-  if (!values.first_name) {
+  if (!values.first_name?.trim()) {
     errors.first_name = [{ message: 'First name is required.' }]
   }
-  if (!values.last_name) {
+  if (!values.last_name?.trim()) {
     errors.last_name = [{ message: 'Last name is required.' }]
   }
-  if (!values.email) {
-    errors.email = [{ message: 'Email is required.' }]
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email?.trim() || '')) {
+    errors.email = [{ message: 'Enter a valid email address.' }]
   }
-  if (!values.phone_number) {
-    errors.phone_number = [{ message: 'Phone number is required.' }]
+  if ((values.phone_number || '').replace(/\D/g, '').length !== 10) {
+    errors.phone_number = [{ message: 'Enter a 10-digit phone number.' }]
   }
   if (!form.step2.street_address) {
     errors.street_address = [{ message: 'Street address is required.' }]
@@ -1725,11 +1625,11 @@ const resolver = ({ values }) => {
   if (!form.step2.zip_code) {
     errors.zip_code = [{ message: 'Zip code is required.' }]
   }
-  if (!values.year_built) {
-    errors.year_built = [{ message: 'Year built is required.' }]
+  if (!validPropertyYear(values.year_built)) {
+    errors.year_built = [{ message: 'Enter a valid year built, no later than the current year.' }]
   }
-  if (!values.square_footage) {
-    errors.square_footage = [{ message: 'Square footage is required.' }]
+  if (!(Number(values.square_footage) > 0 && Number.isFinite(Number(values.square_footage)))) {
+    errors.square_footage = [{ message: 'Enter a total square footage greater than zero.' }]
   }
   if (!form.step2.property_type?.key) {
     errors.property_type = [{ message: 'Property type is required.' }]
@@ -1789,7 +1689,10 @@ onMounted(() => {
 // Computed property to check eligibility
 const newConstructionEligible = computed(() => {
   const currentYear = new Date().getFullYear()
-  return form.step2.year_built >= currentYear - 2
+  return (
+    validPropertyYear(form.step2.year_built, currentYear) &&
+    form.step2.year_built >= currentYear - 2
+  )
 })
 
 // Extract individual address components

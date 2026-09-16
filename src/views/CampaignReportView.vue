@@ -1,5 +1,15 @@
 <script setup>
 import { computed, ref } from 'vue'
+import { useRoute } from 'vue-router'
+import {
+  inspectionContext,
+  inspectionQuoteLink,
+  resolveInspectionIntent,
+} from '@/utils/inspectionIntent'
+const route = useRoute()
+const intent = computed(() => resolveInspectionIntent(route.query.inspection))
+const context = computed(() => inspectionContext(intent.value))
+const quoteTo = computed(() => inspectionQuoteLink(intent.value))
 import SiteHeader from '@/components/campaign/SiteHeader.vue'
 import SiteFooter from '@/components/campaign/SiteFooter.vue'
 import Icon from '@/components/campaign/Icon.vue'
@@ -44,10 +54,10 @@ function changeGroup(key) {
 </script>
 <template>
   <div class="campaign">
-    <SiteHeader />
+    <SiteHeader :inspection-intent="intent" />
     <main id="main-content">
       <section class="wrap utility-intro">
-        <RouterLink class="text-link" to="/"
+        <RouterLink class="text-link" :to="context?.path || '/'"
           ><Icon name="arrow" class="back-arrow" /> Back to the landing page</RouterLink
         >
         <p class="eyebrow"><span></span> SEE THE DIVERSIFIED DIFFERENCE</p>
@@ -85,7 +95,7 @@ function changeGroup(key) {
               <li><Icon name="check" /> Itemized repair estimates</li>
             </ul>
             <p>Sample pricing illustrates report format and is not a current repair quote.</p>
-            <RouterLink to="/request-quote" class="button button-primary"
+            <RouterLink :to="quoteTo" class="button button-primary"
               >Build my inspection quote <Icon name="arrow"
             /></RouterLink>
           </aside>

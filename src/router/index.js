@@ -1,17 +1,18 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LandingView from '@/views/LandingView.vue'
+import { inspectionIntents } from '@/utils/inspectionIntent'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     { path: '/', name: 'home', component: LandingView },
     { path: '/:audience(homebuyer|realtor|investor)', name: 'audience', component: LandingView },
-    {
-      path: '/insurance-inspection',
-      name: 'insurance-inspection',
-      component: LandingView,
-      meta: { title: 'Insurance Inspections in South Florida | Diversified' },
-    },
+    ...Object.entries(inspectionIntents).map(([inspection, service]) => ({
+      path: service.path,
+      name: `service-${inspection}`,
+      component: () => import('@/views/ServiceLandingView.vue'),
+      meta: { inspection, title: `${service.label} in South Florida | Diversified` },
+    })),
     {
       path: '/request-quote',
       name: 'quote',

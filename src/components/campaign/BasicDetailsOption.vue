@@ -1,9 +1,14 @@
 <script setup>
-import { nextTick, ref } from 'vue'
+import { computed, nextTick, ref } from 'vue'
 import Icon from './Icon.vue'
 import QuoteForm from './QuoteForm.vue'
 
-defineProps({ initialDetails: { type: Object, default: () => ({}) } })
+import { inspectionContext } from '@/utils/inspectionIntent'
+const props = defineProps({
+  initialDetails: { type: Object, default: () => ({}) },
+  inspectionIntent: { type: String, default: '' },
+})
+const context = computed(() => inspectionContext(props.inspectionIntent))
 const disclosure = ref(null)
 const revealed = ref(false)
 
@@ -35,13 +40,22 @@ async function resumeQuote() {
     <div class="basic-details-content callback-content">
       <p class="basic-details-recommendation">
         <Icon name="report" /><span
-          >For a tailored inspection price, <strong>the detailed quote is recommended.</strong> If
-          you’re missing information, request a callback here.</span
+          ><template v-if="inspectionIntent === 'progressive'"
+            >For project-specific pricing,
+            <strong>the detailed project request is recommended.</strong></template
+          ><template v-else
+            >For a tailored inspection price,
+            <strong>the detailed request is recommended.</strong></template
+          >
+          If you’re missing information, request a callback here.</span
         >
       </p>
       <QuoteForm
         v-if="revealed"
         :initial-details="initialDetails"
+        :service="context?.label"
+        :audience="inspectionIntent || 'homebuyer'"
+        :inspection-intent="inspectionIntent"
         in-quote-builder
         @resume-quote="resumeQuote"
       />

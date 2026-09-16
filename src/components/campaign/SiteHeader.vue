@@ -4,9 +4,15 @@ import { useRoute } from 'vue-router'
 import Icon from './Icon.vue'
 import logo from '@/assets/logo-light.svg'
 import { trackEvent } from '@/utils/campaign'
+import { inspectionContext, inspectionQuoteLink } from '@/utils/inspectionIntent'
+const props = defineProps({ inspectionIntent: { type: String, default: '' } })
+const context = computed(() => inspectionContext(props.inspectionIntent))
+const quoteTo = computed(() => inspectionQuoteLink(props.inspectionIntent))
 const route = useRoute()
-const landingPath = computed(() =>
-  ['home', 'audience', 'insurance-inspection'].includes(route.name) ? route.path : '/',
+const landingPath = computed(
+  () =>
+    context.value?.path ||
+    (['home', 'audience', 'insurance-inspection'].includes(route.name) ? route.path : '/'),
 )
 </script>
 <template>
@@ -32,7 +38,7 @@ const landingPath = computed(() =>
       >
       <RouterLink
         class="header-quote button button-primary"
-        to="/request-quote"
+        :to="quoteTo"
         @click="trackEvent('request_quote_click', { placement: 'header' })"
         >Get a quote <Icon name="diagonal"
       /></RouterLink>

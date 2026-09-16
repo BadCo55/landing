@@ -12,6 +12,7 @@ import './assets/styles/tailwind.css'
 import './assets/styles/main.css'
 import './assets/styles/campaign.css'
 import './assets/styles/campaign-modern.css'
+import './assets/styles/mobile-readability.css'
 
 const app = createApp(App)
 app.use(createPinia())

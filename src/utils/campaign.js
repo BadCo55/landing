@@ -1,3 +1,4 @@
+import { resolveInspectionIntent } from './inspectionIntent.js'
 export const ATTRIBUTION_KEYS = [
   'utm_source',
   'utm_medium',
@@ -61,12 +62,20 @@ export function trackEvent(event, properties = {}) {
   }
 }
 
-export function trackLead(formName, service, attribution) {
-  const qualified = formName === 'Request Quote Form'
+export function trackLead(formName, service, attribution, context = {}) {
+  const project = formName === 'Progressive Project Request'
+  const qualified = formName === 'Request Quote Form' || project
+  const inspection = resolveInspectionIntent(context.inspection)
+  const leadType = project
+    ? 'qualified_project_request'
+    : qualified
+      ? 'qualified_quote'
+      : 'callback'
   const properties = {
     form_name: formName,
     service,
-    lead_type: qualified ? 'qualified_quote' : 'callback',
+    lead_type: leadType,
+    ...(inspection ? { inspection_intent: inspection } : {}),
     ...attribution,
   }
   trackEvent('form_submit', properties)
@@ -76,7 +85,7 @@ export function trackLead(formName, service, attribution) {
       if (qualified)
         window.fbq?.('track', 'Lead', {
           content_name: service,
-          content_category: 'qualified_quote',
+          content_category: leadType,
         })
       else window.fbq?.('trackCustom', 'CallbackRequest', { content_name: service })
     } catch {
