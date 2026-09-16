@@ -1,4 +1,36 @@
-html,
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 110px;
+  color-scheme: light;
+}
 body {
-    height: 100%
+  margin: 0;
+  min-width: 320px;
+  background: white;
+  color: #252726;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+button,
+a,
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
+img {
+  max-width: 100%;
+}
+::selection {
+  background: #f5cbc5;
+  color: #591c17;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }

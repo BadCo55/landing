@@ -10,7 +10,7 @@
     <div class="text-2xl lg:text-4xl text-blue-500 font-bold leading-tight italic">Fast, Reliable & Approved By All Providers!</div>
     <div class="text-lg lg:text-xl text-slate-700 dark:text-slate-200 font-light my-5 leading-tight ">Whether you're renewing your policy or shopping for better insurance rates, most providers require a Wind Mitigation or 4-Point Inspection.</div>
     <div class="text-lg lg:text-xl text-slate-700 dark:text-slate-200 font-light mb-6 leading-tight ">We provide fast, certified reports accepted by all insurers.</div>
-    <Button type="button" label="Get Your Report Now" severity="warn" />
+    <Button type="button" label="Get Your Report Now" icon="pi pi-arrow-right" icon-pos="right" @click="router.push('/request-quote')" />
     <div class="w-full grow flex items-start justify-center rounded-t-3xl mt-12 overflow-hidden">
         <div class="overflow-hidden w-full aspect-[720/295] max-w-[720px] rounded-t-3xl shadow-2xl border border-b-0 border-primary-100 dark:border-primary-400/30">
             <img src="@/assets/img/four-point.png" alt="Image" class="block w-full object-cover object-top rounded-t-3xl" />
@@ -23,7 +23,7 @@
             <div class="relative order-1 flex items-center justify-center sm:justify-between gap-6 flex-wrap w-full lg:w-auto">
                 <span class="font-semibold text-3xl text-surface-0"> $25 Off Sale Ends </span>
                 <div class="flex lg:hidden items-center gap-6 min-w-40">
-                    <Button label="Shop Now" icon="pi pi-arrow-right" icon-pos="right" rounded severity="secondary" class="sm:!w-auto !w-full" />
+                    <Button label="Schedule Now" icon="pi pi-arrow-right" icon-pos="right" rounded severity="secondary" class="sm:!w-auto !w-full" />
                     <!-- <Button icon="pi pi-times" text rounded severity="secondary" class="absolute -right-5 top-0 sm:relative" /> -->
                 </div>
             </div>
@@ -55,8 +55,8 @@
                 </div>
             </div>
             <div class="hidden lg:flex items-center gap-12 order-3">
-                <Button label="Shop Now" icon="pi pi-arrow-right" icon-pos="right" rounded severity="secondary" />
-                <Button icon="pi pi-times" text rounded severity="secondary" class="!text-surface-0 hover:!bg-surface-500/20" />
+                <Button label="Schedule Now" icon="pi pi-arrow-right" icon-pos="right" rounded severity="secondary" />
+                <!-- <Button icon="pi pi-times" text rounded severity="secondary" class="!text-surface-0 hover:!bg-surface-500/20" /> -->
             </div>
         </div>
     </div>
@@ -96,23 +96,25 @@
   </div>
 
   <div
-      class="bg-red-500/20 p-5 flex justify-center md:justify-end bg-no-repeat bg-cover md:bg-contain bg-[url('/src/assets/img/cta-fade.png')]"
+      class="bg-red-900 p-5 flex justify-center md:justify-end bg-no-repeat bg-cover md:bg-contain bg-[url('/src/assets/img/cta-fade.png')] h-[400px] items-center"
   >
       <div class="px-2 text-center lg:text-start">
           <div class="text-white font-bold text-3xl">Not Sure If Your Home Qualifies?</div>
           <div class="text-white font-medium text-2xl mb-5">Check Out our <span class="italic">FREE</span> Insurance Inspection Guide</div>
           <!-- <div class="mt-4 mb-8 text-gray-200 font-medium leading-normal">{{ tagline }}</div> -->
           <div class="flex flex-col lg:flex-row gap-5">
-                <Button label="Get My Guide Now!" class="w-full lg:w-auto dark:!text-white" severity="info" />
-                <a href="tel:+19542529980" class="w-full lg:w-auto">
-                    <Button class="w-full lg:w-auto dark:!text-white">
-                        <div class="flex flex-col">
-                            <p>Call Now:</p>
-                            <p>(954) 252-9980</p>
-                        </div>
-                    </Button>
-                </a>
-                <Button severity="success" label="Schedule My Inspection!" class="dark:!text-white font-bold !text-xl" raised />
+                <Button label="Get My Guide Now!" class="w-full lg:w-auto dark:!text-white" severity="info" as="a" href="https://diversifiedhomeinspections.com/services/insurance-inspections/" />
+                <Button
+                  as="a"
+                  href="tel:+19542529980"
+                  class="w-full lg:w-auto dark:!text-white"
+                >
+                    <div class="flex flex-col items-center">
+                        <p>Call Now:</p>
+                        <p>(954) 252-9980</p>
+                    </div>
+                </Button>
+                <Button severity="success" label="Schedule My Inspection!" class="dark:!text-white font-bold !text-xl" raised @click="router.push({name: 'request-quote', query: { discount: '25off' }})" />
           </div>
       </div>
   </div>
@@ -152,7 +154,8 @@
 
                 <div class="w-full h-px bg-surface-200 dark:bg-surface-700" />
                 <div class="flex items-center gap-2">
-                    <span class="font-bold text-3xl text-surface-900 dark:text-surface-0 leading-tight">$300.00</span>
+                    <span class="font-semibold text-2xl text-surface-400 dark:text-surface-0 line-through decoration-2 decoration-rose-500 leading-tight">$300.00</span>
+                    <span class="text-3xl font-bold text-emerald-600">$275.00</span>
 
                 </div>
                 <div class="w-full h-px bg-surface-200 dark:bg-surface-600" />
@@ -180,7 +183,8 @@
 
                 <div class="w-full h-px bg-surface-200 dark:bg-surface-700" />
                 <div class="flex items-center gap-2">
-                    <span class="font-bold text-3xl text-surface-900 dark:text-surface-0 leading-tight">$150.00</span>
+                    <span class="font-semibold text-2xl text-surface-400 dark:text-surface-0 line-through decoration-2 decoration-rose-500 leading-tight">$150.00</span>
+                    <span class="text-3xl font-bold text-emerald-600">$125.00</span>
                 </div>
                 <div class="w-full h-px bg-surface-200 dark:bg-surface-600" />
                 <ul class="list-none flex flex-col gap-4 flex-1">
@@ -210,8 +214,9 @@
                 </div>
 
                 <div class="w-full h-px bg-surface-200 dark:bg-surface-700" />
-                <div class="flex items-center gap-2">
-                    <span class="font-bold text-3xl text-surface-900 dark:text-surface-0 leading-tight">$150.00</span>
+                <div class="flex items-center gap-3">
+                    <span class="font-semibold text-2xl text-surface-400 dark:text-surface-0 line-through decoration-2 decoration-rose-500 leading-tight">$150.00</span>
+                    <span class="text-3xl font-bold text-emerald-600">$125.00</span>
                 </div>
                 <div class="w-full h-px bg-surface-200 dark:bg-surface-600" />
                 <ul class="list-none flex flex-col gap-4 flex-1">
@@ -240,9 +245,10 @@
 </template>
 <script setup>
 import { Button } from 'primevue';
-import { ref, computed, onMounted, onUnmounted } from 'vue';
-import HeroSection from '@/components/realtor/HeroSection.vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { useAppStore } from '@/stores/appStore';
+import { useRouter, useRoute } from 'vue-router';
+
 const appStore = useAppStore();
 
 const testimonials = [
@@ -266,6 +272,8 @@ const testimonials = [
 const SECONDS_PER_DAY = 24 * 60 * 60;
 const SECONDS_PER_HOUR = 60 * 60;
 const SECONDS_PER_MINUTE = 60;
+
+const router = useRouter();
 
 const units = ref([
     { label: 'Hour', value: '00', nextValue: '00', flip: false },
@@ -334,5 +342,24 @@ onMounted(() => {
 onUnmounted(() => {
     clearInterval(timer);
 });
+
+const requestQuoteClick = (action, label, page) => {
+    if (window.gtag) {
+        window.gtag('event', action, {
+            category: 'Button Click',
+            label: label,
+            page_location: window.location.href,
+            page: page,
+        });
+    }
+    if (window.fbq) {
+        window.fbq('trackCustom', `${action}_click`, {
+            button_label: label,
+            page_name: page,
+            url: window.location.href,
+        })
+    }
+    router.push('/request-quote');
+}
 
 </script>

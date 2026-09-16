@@ -1,0 +1,354 @@
+/* Dialogs are teleported to the document body, outside the campaign wrapper. */
+.service-dialog-mask {
+  background: #15222db8;
+  backdrop-filter: blur(7px);
+  padding: 24px;
+}
+.service-dialog {
+  width: 780px;
+  max-width: 100%;
+  max-height: calc(100vh - 48px);
+  max-height: min(880px, calc(100dvh - 48px));
+  font-family: Manrope, 'Segoe UI', sans-serif;
+  color: #32434f;
+  background: #fff;
+  border: 1px solid #ffffff70;
+  border-radius: 22px;
+  box-shadow: 0 32px 110px #07121a55;
+  overflow: hidden;
+}
+.service-dialog *,
+.service-dialog *::before,
+.service-dialog *::after {
+  box-sizing: border-box;
+}
+.service-dialog .p-dialog-header {
+  padding: 30px 32px 27px;
+  gap: 20px;
+  align-items: flex-start;
+  background: #f5f7f8;
+  border-bottom: 1px solid #e2e8eb;
+  flex-shrink: 0;
+}
+.service-dialog-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  min-width: 0;
+}
+.service-dialog-symbol {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  flex: 0 0 56px;
+  border-radius: 15px;
+  border: 1px solid #ecd7d3;
+  background: #fff5f3;
+  color: #b93028;
+}
+.service-dialog-symbol .icon {
+  width: 27px;
+  height: 27px;
+}
+.service-dialog .service-dialog-eyebrow {
+  color: #7b8892;
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 1.4px;
+  margin: 2px 0 10px;
+  line-height: 1.5;
+}
+.service-dialog-heading h2 {
+  font-size: clamp(25px, 3vw, 32px);
+  font-weight: 650;
+  letter-spacing: -1px;
+  line-height: 1.2;
+  color: #20313c;
+  margin: 0;
+}
+.service-dialog .service-dialog-close {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border: 1px solid #dce3e7;
+  border-radius: 50%;
+  background: #fff;
+  color: #526672;
+  padding: 9px;
+}
+.service-dialog .service-dialog-close:hover {
+  background: #e9eef1;
+  border-color: #c2cdd5;
+  color: #243743;
+}
+.service-dialog .p-dialog-header-actions {
+  flex-shrink: 0;
+}
+.service-dialog .p-dialog-content {
+  padding: 30px 34px 34px;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #b8c4cc transparent;
+}
+.service-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  font-size: 14px;
+  line-height: 1.85;
+  color: #62717e;
+}
+.service-detail > * {
+  margin-block: 0;
+}
+.service-detail p {
+  margin: 0;
+  padding: 0;
+  font-size: inherit;
+  line-height: inherit;
+}
+.service-detail p + p {
+  margin-top: 14px;
+}
+.service-detail > div:first-child > p:first-child {
+  color: #354855;
+  font-size: 16px;
+  line-height: 1.8;
+}
+.service-detail .font-bold,
+.service-detail strong {
+  font-weight: 700;
+  color: #324652;
+}
+.service-detail > p.font-bold {
+  font-size: 12px;
+  letter-spacing: 0.1px;
+  margin-bottom: -11px;
+}
+.service-dialog .service-detail-card {
+  background: #f4f7f8;
+  color: #5d707c;
+  border: 1px solid #e0e7ec;
+  border-radius: 14px;
+  box-shadow: none;
+}
+.service-detail-card .p-card-body {
+  padding: 23px 25px;
+}
+.service-detail-card .p-card-content {
+  padding: 0;
+}
+.service-detail h3.service-detail-heading {
+  margin: 0 0 18px;
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 750;
+  color: #273c49;
+  letter-spacing: -0.25px;
+}
+.service-detail .service-detail-list {
+  display: grid;
+  gap: 16px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.service-detail .service-detail-list--grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 28px;
+  row-gap: 19px;
+}
+.service-detail-list li {
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+  font-size: 13px;
+  line-height: 1.75;
+}
+.service-detail-list li > div {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+}
+.service-detail-list .pi-check {
+  display: grid;
+  place-items: center;
+  width: 19px;
+  height: 19px;
+  flex: 0 0 19px;
+  margin-top: 3px;
+  padding: 0;
+  color: #52745e;
+  background: #e3ece6;
+  border-radius: 50%;
+  font-size: 9px;
+}
+.service-detail > .service-detail-list {
+  gap: 0;
+  border-top: 1px solid #e4e9ed;
+}
+.service-detail > .service-detail-list > li {
+  padding-block: 17px;
+  border-bottom: 1px solid #e4e9ed;
+}
+.service-detail > .service-detail-list--grid {
+  column-gap: 26px;
+}
+.service-detail .p-message {
+  border: 1px solid #dce5eb;
+  border-left: 3px solid #94acba;
+  border-radius: 9px;
+  background: #eef4f7;
+  color: #546c7b;
+  box-shadow: none;
+  margin-block: 20px 0;
+}
+.service-detail .p-message-text {
+  font-size: 12px;
+  line-height: 1.8;
+}
+.service-detail .p-message-content {
+  padding: 14px 16px;
+}
+.service-detail .p-message .inline-flex {
+  align-items: flex-start;
+}
+.service-detail .p-message .pi-info-circle {
+  font-size: 14px;
+  margin-top: 4px;
+  color: #6a8799;
+}
+.service-detail .p-message + p {
+  margin-top: 20px;
+}
+.service-detail > div:not(:first-child) > .service-detail-card {
+  margin-block: 18px;
+}
+.service-dialog .p-dialog-footer {
+  padding: 19px 32px;
+  background: #fff;
+  border-top: 1px solid #e3e8ec;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-shrink: 0;
+}
+.service-dialog .service-dialog-footnote {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: #77858f;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.service-dialog-footnote .icon {
+  width: 16px;
+  height: 16px;
+  color: #62816c;
+  flex-shrink: 0;
+}
+.service-dialog .service-dialog-return {
+  font-family: inherit;
+  min-height: 47px;
+  padding: 12px 18px;
+  font-size: 12px;
+  font-weight: 700;
+  color: white;
+  background: #c92828;
+  border: 1px solid #c92828;
+  border-radius: 9px;
+  gap: 13px;
+  white-space: nowrap;
+}
+.service-dialog .service-dialog-return:hover {
+  background: #ad2424;
+  border-color: #ad2424;
+}
+.service-dialog .service-dialog-return .pi {
+  font-size: 11px;
+}
+.service-dialog button:focus-visible {
+  outline: 3px solid #c9282860;
+  outline-offset: 3px;
+}
+@media (max-width: 600px) {
+  .service-dialog-mask {
+    padding: 12px;
+  }
+  .service-dialog {
+    border-radius: 18px;
+    max-height: calc(100dvh - 24px);
+  }
+  .service-dialog .p-dialog-header {
+    padding: 23px 20px;
+    gap: 12px;
+  }
+  .service-dialog-heading {
+    gap: 12px;
+  }
+  .service-dialog-symbol {
+    width: 42px;
+    height: 42px;
+    flex-basis: 42px;
+    border-radius: 11px;
+  }
+  .service-dialog-symbol .icon {
+    width: 22px;
+    height: 22px;
+  }
+  .service-dialog .service-dialog-eyebrow {
+    font-size: 8px;
+    letter-spacing: 0.8px;
+    margin-bottom: 7px;
+  }
+  .service-dialog-heading h2 {
+    font-size: 24px;
+    letter-spacing: -0.7px;
+  }
+  .service-dialog .service-dialog-close {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    padding: 8px;
+  }
+  .service-dialog .p-dialog-content {
+    padding: 24px 22px;
+  }
+  .service-detail {
+    font-size: 13px;
+    gap: 22px;
+  }
+  .service-detail > div:first-child > p:first-child {
+    font-size: 15px;
+  }
+  .service-detail .service-detail-list--grid {
+    grid-template-columns: 1fr;
+  }
+  .service-detail-card .p-card-body {
+    padding: 20px;
+  }
+  .service-dialog .p-dialog-footer {
+    flex-direction: column-reverse;
+    gap: 11px;
+    padding: 16px 22px max(16px, env(safe-area-inset-bottom));
+  }
+  .service-dialog .service-dialog-return {
+    width: 100%;
+  }
+  .service-dialog .service-dialog-footnote {
+    font-size: 10px;
+  }
+}
+@media (max-width: 380px) {
+  .service-dialog-symbol {
+    display: none;
+  }
+  .service-dialog .p-dialog-content {
+    padding: 22px 18px;
+  }
+}

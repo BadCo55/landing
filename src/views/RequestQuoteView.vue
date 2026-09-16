@@ -1,144 +1,154 @@
 <template>
-  <div class="px-3 pb-20 mt-5 lg:py-20 md:px-12 lg:px-20" id="form-container">
-    <div
-      class="py-10 px-5 lg:p-14 rounded-3xl bg-slate-100 dark:bg-slate-800 flex items-start lg:flex-row flex-col gap-10 lg:gap-[4.5rem]"
-      v-if="step < 7"
-    >
-      <div class="flex-1 flex flex-col justify-between">
-        <div v-if="step < 3" class="mb-5">
-          <h2 class="text-3xl lg:text-4xl font-bold text-slate-700 dark:text-slate-50">
-            Requesting a Quote is Easy
-          </h2>
-          <p class="mt-6 text-lg lg:text-xl leading-6 text-slate-600 dark:text-slate-400">
-            Complete the form and get instant access to your home inspection quote!
-          </p>
+  <div class="quote-builder" id="form-container">
+    <p v-if="isPreview" class="preview-note quote-preview">
+      Preview mode: this tool will not send a real request or email.
+    </p>
+    <div v-if="submissionError" class="form-error" role="alert">
+      {{ submissionError }} <a href="tel:+19542529980">(954) 252-9980</a>
+    </div>
+    <details v-if="step > 1 && step < 7" :key="step" class="quote-summary quote-summary--pinned">
+      <summary>
+        <span class="quote-summary-mark"><i class="pi pi-file" aria-hidden="true"></i></span>
+        <span class="quote-summary-overview"
+          ><strong>Your quote so far</strong
+          ><span
+            >{{
+              step > 2
+                ? form.step2.street_address
+                : `${form.step1.first_name} ${form.step1.last_name}`
+            }}<template v-if="step > 2 && form.step2.city"> · {{ form.step2.city }}</template></span
+          ></span
+        >
+        <span v-if="step >= 5" class="quote-summary-count"
+          >{{ Object.values(form.step5.selected_services).filter(Boolean).length }} services
+          selected</span
+        >
+        <span class="quote-summary-toggle"
+          ><span class="when-closed">View details</span><span class="when-open">Hide details</span
+          ><i class="pi pi-chevron-down" aria-hidden="true"></i
+        ></span>
+      </summary>
+      <div class="quote-summary-content">
+        <div class="quote-summary-group">
+          <span class="quote-summary-label">CONTACT</span>
+          <strong>{{ form.step1.first_name }} {{ form.step1.last_name }}</strong>
+          <span>{{ form.step1.email }}</span>
+          <span>{{ form.step1.phone_number }}</span>
         </div>
-        <div class="dark:text-slate-400 mb-5" v-if="step > 1">
-          <p class="font-bold dark:text-slate-300 text-lg">
-            {{ form.step1.first_name }} {{ form.step1.last_name }}
-          </p>
-          <p>
-            <span class="font-bold dark:text-slate-300">Phone #: </span
-            >{{ form.step1.phone_number }}
-          </p>
-          <p><span class="font-bold dark:text-slate-300">Email: </span> {{ form.step1.email }}</p>
-        </div>
-        <div class="flex flex-col lg:flex-row lg:gap-10">
-          <div class="flex">
-            <div class="dark:text-slate-400 mb-5" v-if="step > 2">
-              <p class="dark:text-slate-300 text-lg">{{ form.step2.street_address }}</p>
-              <p>{{ form.step2.city }}, {{ form.step2.state }} {{ form.step2.zip_code }}</p>
-              <p>{{ form.step2.county }}</p>
-              <p v-if="step > 2">
-                <span class="font-bold">Type: </span>{{ form.step2.property_type.value }}
-              </p>
-              <p>
-                <span class="font-bold">Feet²: </span>{{ number_format(form.step2.square_footage) }}
-              </p>
-              <p><span class="font-bold">Year: </span>{{ form.step2.year_built }}</p>
-            </div>
-          </div>
-          <div class="flex flex-col" v-if="step > 3">
-            <div v-if="form.step3.pool">
-              <Checkbox binary disabled v-model="form.step3.pool" />
-              <label class="dark:text-slate-400 ms-2">Pool</label>
-            </div>
-            <div v-if="form.step3.extra_structure">
-              <Checkbox binary disabled v-model="form.step3.extra_structure" />
-              <label class="dark:text-slate-400 ms-2">Extra Structure</label>
-            </div>
-            <div v-if="form.step3.outdoor_kitchen">
-              <Checkbox binary disabled v-model="form.step3.outdoor_kitchen" />
-              <label class="dark:text-slate-400 ms-2">Outdoor Kitchen</label>
-            </div>
-            <div v-if="form.step3.seawall">
-              <Checkbox binary disabled v-model="form.step3.seawall" />
-              <label class="dark:text-slate-400 ms-2">Seawall</label>
-            </div>
-            <div v-if="form.step3.crawlspace">
-              <Checkbox binary disabled v-model="form.step3.crawlspace" />
-              <label class="dark:text-slate-400 ms-2">Crawlspace</label>
-            </div>
+        <div v-if="step > 2" class="quote-summary-group">
+          <span class="quote-summary-label">PROPERTY</span>
+          <strong>{{ form.step2.street_address }}</strong>
+          <span>{{ form.step2.city }}, {{ form.step2.state }} {{ form.step2.zip_code }}</span>
+          <span v-if="form.step2.county">{{ form.step2.county }}</span>
+          <span>{{ form.step2.property_type.value }}</span>
+          <div class="quote-property-facts">
+            <span>{{ number_format(form.step2.square_footage) }} sq ft</span
+            ><span>Built {{ form.step2.year_built }}</span>
           </div>
         </div>
         <div
-          v-if="Object.keys(form.step5.selected_services).length && step >= 5"
-          class="dark:text-slate-400"
+          v-if="step > 3 && propertyFeatures.some((feature) => form.step3[feature.key])"
+          class="quote-summary-group"
         >
-          <p class="font-bold mb-3 text-xl dark:text-slate-300 mt-5 lg:mt-0">Selected Services</p>
-          <ul class="ms-5">
-            <div class="flex flex-col">
-              <li
-                v-for="(value, service, index) in form.step5.selected_services"
-                :key="index"
-                class=""
-              >
-                <div class="inline-flex items-center" v-if="value">
-                  <i class="pi pi-check-circle text-xl text-green-500 pe-1"></i>
-                  <p class="text-medium font-light">{{ snakeToNormal(service) }}</p>
-                </div>
-              </li>
-            </div>
+          <span class="quote-summary-label">FEATURES</span>
+          <ul>
+            <template v-for="feature in propertyFeatures" :key="feature.key"
+              ><li v-if="form.step3[feature.key]">
+                <i class="pi pi-check" aria-hidden="true"></i>{{ feature.name }}
+              </li></template
+            >
           </ul>
         </div>
-        <div class="mt-5 hidden lg:block">
-          <div class="text-lg lg:text-2xl leading-6 font-medium text-slate-500 dark:text-slate-50">
-            Prefer speaking to someone? Click below to call our office!
-          </div>
-          <div class="text-base lg:text-xl leading-6 font-medium text-blue-500">(954) 252-9980</div>
-          <div class="text-base lg:text-xl leading-6 font-medium text-blue-500 dark:text-slate-0">
-            office@diversifiedhomeinspections.com
-          </div>
-          <div class="flex items-center gap-3 mt-3.5">
-            <a
-              href="https://www.instagram.com/diversified_home_inspections/"
-              class="text-slate-400 text-base lg:text-lg dark:text-slate-0 bg-slate-0 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-700 transition-all border border-slate-300 dark:border-slate-800 rounded-full w-12 h-12 lg:w-9 lg:h-9 flex items-center justify-center"
+        <div
+          v-if="step >= 5 && Object.values(form.step5.selected_services).some(Boolean)"
+          class="quote-summary-group"
+        >
+          <span class="quote-summary-label">SELECTED SERVICES</span>
+          <ul>
+            <template v-for="(value, service) in form.step5.selected_services" :key="service"
+              ><li v-if="value">
+                <i class="pi pi-check" aria-hidden="true"></i>{{ snakeToNormal(service) }}
+              </li></template
             >
-              <i class="pi pi-instagram" style="font-size: 1.5rem" />
-            </a>
-            <a
-              href="https://www.facebook.com/diversifiedhomeinspections/"
-              class="text-slate-400 text-base lg:text-lg dark:text-slate-0 bg-slate-0 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-700 transition-all border border-slate-300 dark:border-slate-800 rounded-full w-12 h-12 lg:w-9 lg:h-9 flex items-center justify-center"
-            >
-              <i class="pi pi-facebook" style="font-size: 1.5rem" />
-            </a>
-            <a
-              href="https://x.com/divhomeinsp"
-              class="text-slate-400 text-base lg:text-lg dark:text-slate-0 bg-slate-0 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-700 transition-all border border-slate-300 dark:border-slate-800 rounded-full w-12 h-12 lg:w-9 lg:h-9 flex items-center justify-center"
-            >
-              <i class="pi pi-twitter" style="font-size: 1.5rem" />
-            </a>
-            <a
-              href="https://www.linkedin.com/company/diversified-home-inspections"
-              class="text-slate-400 text-base lg:text-lg dark:text-slate-0 bg-slate-0 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-700 transition-all border border-slate-300 dark:border-slate-800 rounded-full w-12 h-12 lg:w-9 lg:h-9 flex items-center justify-center"
-            >
-              <i class="pi pi-linkedin" style="font-size: 1.5rem" />
-            </a>
-            <a
-              href="https://www.youtube.com/@diversifiedhomeinspections"
-              class="text-slate-400 text-base lg:text-lg dark:text-slate-0 bg-slate-0 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-700 transition-all border border-slate-300 dark:border-slate-800 rounded-full w-12 h-12 lg:w-9 lg:h-9 flex items-center justify-center"
-            >
-              <i class="pi pi-youtube" style="font-size: 1.5rem" />
-            </a>
-            <a
-              href="https://www.google.com/search?q=diversified+home+inspections+southwest+ranches+fl"
-              class="text-slate-400 text-base lg:text-lg dark:text-slate-0 bg-slate-0 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-700 transition-all border border-slate-300 dark:border-slate-800 rounded-full w-12 h-12 lg:w-9 lg:h-9 flex items-center justify-center"
-            >
-              <i class="pi pi-google" style="font-size: 1.5rem" />
-            </a>
-          </div>
+          </ul>
         </div>
       </div>
-      <div class="flex flex-col flex-1 w-full mt-5" id="progress-bar">
-        <ProgressBar :value="progress" class="!bg-slate-200 mb-6" />
+    </details>
+    <BasicDetailsOption
+      v-show="step < 7"
+      :initial-details="{
+        name: `${form.step1.first_name} ${form.step1.last_name}`.trim(),
+        email: form.step1.email,
+        phone: form.step1.phone_number,
+        address: [form.step2.street_address, form.step2.city, form.step2.zip_code]
+          .filter(Boolean)
+          .join(', '),
+      }"
+    />
+    <div v-if="step < 7" class="quote-layout">
+      <aside class="quote-sidebar" aria-label="Your quote overview">
+        <div class="quote-rail">
+          <p class="quote-kicker">MADE FOR YOUR PROPERTY</p>
+          <h2>Your inspection,<br />step by step.</h2>
+          <ol class="quote-steps" aria-label="Quote steps">
+            <li
+              v-for="(item, index) in quoteSteps"
+              :key="item.title"
+              :class="{ 'is-current': step === index + 1, 'is-complete': step > index + 1 }"
+              :aria-current="step === index + 1 ? 'step' : undefined"
+            >
+              <span class="quote-step-number" aria-hidden="true"
+                ><i v-if="step > index + 1" class="pi pi-check"></i
+                ><template v-else>{{ String(index + 1).padStart(2, '0') }}</template></span
+              >
+              <div>
+                <strong>{{ item.short }}</strong
+                ><span>{{ item.detail }}</span>
+              </div>
+            </li>
+          </ol>
+          <p class="quote-rail-note">A few details now. A quote built around your home.</p>
+        </div>
+
+        <div class="quote-support">
+          <span class="quote-support-icon"><i class="pi pi-phone" aria-hidden="true"></i></span>
+          <div>
+            <strong>A little help along the way?</strong>
+            <p>Our team is here for you.</p>
+            <a href="tel:+19542529980"
+              >(954) 252-9980 <i class="pi pi-arrow-up-right" aria-hidden="true"></i></a
+            ><a class="quote-support-email" href="mailto:office@diversifiedhomeinspections.com"
+              >Email our office</a
+            >
+          </div>
+        </div>
+      </aside>
+      <section
+        class="quote-panel"
+        id="progress-bar"
+        :data-step="step"
+        aria-labelledby="quote-step-title"
+      >
+        <div class="quote-progress-heading">
+          <span
+            >STEP {{ String(step).padStart(2, '0') }}
+            <span class="quote-step-total">/ 06</span></span
+          ><strong>{{ progress }}<span>%</span></strong>
+        </div>
+        <ProgressBar
+          :value="progress"
+          :showValue="false"
+          aria-label="Inspection quote progress"
+          class="quote-progress-track"
+        />
+        <h2 id="quote-step-title">{{ quoteSteps[step - 1].title }}</h2>
         <template v-if="step === 1">
-          <p class="my-6 text-lg lg:text-xl leading-6 text-slate-600 dark:text-slate-400">
-            Enter your contact info so we know where to send the quote.
-          </p>
+          <p class="quote-step-description">Tell us where to send your inspection quote.</p>
           <Form v-slot="$form" :resolver :initialValues="form.step1" @submit="onSubmitStep1">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 mb-6">
+            <div class="quote-fields quote-contact-fields">
               <div class="flex flex-col">
-                <FloatLabel>
+                <div class="quote-field">
+                  <label for="first_name">First Name</label>
                   <InputText
                     fluid
                     type="text"
@@ -146,8 +156,7 @@
                     name="first_name"
                     v-model="form.step1.first_name"
                   />
-                  <label for="first_name">First Name</label>
-                </FloatLabel>
+                </div>
                 <Message
                   v-if="$form.first_name?.invalid"
                   severity="error"
@@ -157,7 +166,8 @@
                 >
               </div>
               <div class="flex flex-col">
-                <FloatLabel>
+                <div class="quote-field">
+                  <label for="last_name">Last Name</label>
                   <InputText
                     fluid
                     type="text"
@@ -165,8 +175,7 @@
                     name="last_name"
                     v-model="form.step1.last_name"
                   />
-                  <label for="last_name">Last Name</label>
-                </FloatLabel>
+                </div>
                 <Message
                   v-if="$form.last_name?.invalid"
                   severity="error"
@@ -176,10 +185,16 @@
                 >
               </div>
               <div class="flex flex-col">
-                <FloatLabel>
-                  <InputText fluid type="text" name="email" id="email" v-model="form.step1.email" />
+                <div class="quote-field">
                   <label for="email">Email</label>
-                </FloatLabel>
+                  <InputText
+                    fluid
+                    type="email"
+                    name="email"
+                    id="email"
+                    v-model="form.step1.email"
+                  />
+                </div>
                 <Message
                   v-if="$form.email?.invalid"
                   severity="error"
@@ -189,17 +204,18 @@
                 >
               </div>
               <div class="flex flex-col">
-                <FloatLabel>
+                <div class="quote-field">
+                  <label for="phone_number">Phone #</label>
                   <InputMask
                     fluid
                     type="text"
                     autocomplete="tel"
                     name="phone_number"
+                    id="phone_number"
                     mask="999-999-9999"
                     v-model="form.step1.phone_number"
                   />
-                  <label for="phone_number">Phone #</label>
-                </FloatLabel>
+                </div>
                 <Message
                   v-if="$form.phone_number?.invalid"
                   severity="error"
@@ -209,7 +225,7 @@
                 >
               </div>
             </div>
-            <div class="flex justify-center">
+            <div class="quote-actions">
               <Button
                 label="Next Step"
                 icon="pi pi-arrow-right"
@@ -221,13 +237,15 @@
           </Form>
         </template>
         <template v-if="step === 2">
-          <p class="my-6 text-lg lg:text-xl leading-6 text-slate-600 dark:text-slate-400">
-            Great! Now, enter some information about the property.
+          <p class="quote-step-description">
+            Add the address and details of the property you’d like inspected.
           </p>
           <Form v-slot="$form" :resolver :initialValues="form.step2" @submit="onSubmitStep2">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-3 lg:gap-4 mb-6">
+            <div class="quote-fields quote-property-fields">
               <div class="flex flex-col">
-                <label for="" class="text-sm dark:text-slate-400">Street Address</label>
+                <label for="street_address" class="text-sm dark:text-slate-400"
+                  >Street Address</label
+                >
                 <InputText
                   class="dark:!text-slate-300"
                   fluid
@@ -247,11 +265,12 @@
                 >
               </div>
               <div class="flex flex-col">
-                <label for="" class="text-sm dark:text-slate-400">City</label>
+                <label for="city" class="text-sm dark:text-slate-400">City</label>
                 <InputText
                   fluid
                   class="dark:!text-slate-300"
                   type="text"
+                  id="city"
                   name="city"
                   v-model="form.step2.city"
                   placeholder="City"
@@ -270,11 +289,12 @@
                                 <Message v-if="$form.county?.invalid" severity="error" size="small" variant="simple">{{ $form.county.error?.message }}</Message>
                             </div> -->
               <div class="flex flex-col">
-                <label for="" class="text-sm dark:text-slate-400">Zip Code</label>
+                <label for="zip_code" class="text-sm dark:text-slate-400">Zip Code</label>
                 <InputText
                   fluid
                   class="dark:!text-slate-300"
                   type="number"
+                  id="zip_code"
                   name="zip_code"
                   v-model="form.step2.zip_code"
                   placeholder="Zip Code"
@@ -288,7 +308,7 @@
                 >
               </div>
               <div class="flex flex-col">
-                <label for="" class="text-sm dark:text-slate-400"
+                <label for="square_footage" class="text-sm dark:text-slate-400"
                   >Total Square Footage (not under-air)</label
                 >
                 <InputNumber
@@ -296,6 +316,7 @@
                   class="dark:!text-slate-300"
                   :useGrouping="true"
                   type="number"
+                  inputId="square_footage"
                   name="square_footage"
                   v-model="form.step2.square_footage"
                   placeholder="Total Square Feet"
@@ -309,7 +330,7 @@
                 >
               </div>
               <div class="flex flex-col">
-                <label for="" class="text-sm dark:text-slate-400">Year Built</label>
+                <label for="year_built" class="text-sm dark:text-slate-400">Year Built</label>
                 <InputNumber
                   fluid
                   class="dark:!text-slate-300"
@@ -317,6 +338,7 @@
                   type="number"
                   :min="1850"
                   :max="currentYear"
+                  inputId="year_built"
                   name="year_built"
                   v-model="form.step2.year_built"
                   placeholder="Year Built"
@@ -330,11 +352,12 @@
                 >
               </div>
               <div class="flex flex-col">
-                <label for="" class="text-sm dark:text-slate-400">Property Type</label>
+                <label for="property_type" class="text-sm dark:text-slate-400">Property Type</label>
                 <Select
                   fluid
                   v-model="form.step2.property_type"
                   :options="propertyTypes"
+                  inputId="property_type"
                   name="property_type"
                   :value="propertyTypes.key"
                   optionLabel="value"
@@ -351,25 +374,23 @@
               <!-- <template v-if="propertySelected">
                             </template> -->
             </div>
-            <div class="flex gap-5 justify-center">
-              <Button label="Back" icon="pi pi-arrow-left" @click="goBack" />
+            <div class="quote-actions">
+              <Button label="Back" class="quote-back" icon="pi pi-arrow-left" @click="goBack" />
               <Button label="Next" type="submit" icon="pi pi-arrow-right" iconPos="right" />
             </div>
           </Form>
         </template>
         <template v-if="step === 3">
-          <p class="my-6 text-lg lg:text-xl leading-6 text-slate-600 dark:text-slate-400">
-            Awesome! Now, does the property have any of these features?
-          </p>
+          <p class="quote-step-description">Select any features that apply to this property.</p>
           <Form
             v-slot="$form"
             :resolver="resolver"
             :initialValues="form.step3"
             @submit="onSubmitStep3"
           >
-            <div class="flex gap-5">
-              <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                <div class="flex flex-col">
+            <div class="quote-features">
+              <div class="quote-features-layout">
+                <div class="quote-feature-choices">
                   <div>
                     <Checkbox binary inputId="pool" v-model="form.step3.pool" />
                     <label for="pool" class="dark:text-slate-400 ms-2">Pool</label>
@@ -409,9 +430,12 @@
                     <label for="well_water" class="dark:text-slate-400 ms-2">Well Water</label>
                   </div>
                 </div>
-                <div v-if="form.step3.extra_structure || form.step3.seawall">
+                <div
+                  class="quote-feature-details"
+                  v-if="form.step3.extra_structure || form.step3.seawall"
+                >
                   <div class="" v-if="form.step3.extra_structure">
-                    <label for="" class="dark:text-slate-400"
+                    <label for="extra_structure_details" class="dark:text-slate-400"
                       >Tell us more about the extra structure</label
                     >
                     <Textarea
@@ -432,7 +456,7 @@
                     >
                   </div>
                   <div v-if="form.step3.seawall">
-                    <label for="" class="dark:text-slate-400"
+                    <label for="seawall_length" class="dark:text-slate-400"
                       >What is the seawall length in feet?</label
                     >
                     <InputNumber
@@ -441,6 +465,7 @@
                       type="number"
                       :min="0"
                       placeholder="Seawall Length (ft.)"
+                      inputId="seawall_length"
                       v-model="form.step3.seawall_length"
                     />
                     <p class="text-red-500 text-xs mt-1">
@@ -450,15 +475,15 @@
                 </div>
               </div>
             </div>
-            <div class="flex gap-5 justify-center mt-5">
-              <Button label="Back" icon="pi pi-arrow-left" @click="goBack" />
+            <div class="quote-actions">
+              <Button label="Back" class="quote-back" icon="pi pi-arrow-left" @click="goBack" />
               <Button label="Next" icon="pi pi-arrow-right" iconPos="right" type="submit" />
             </div>
           </Form>
         </template>
         <template v-if="step === 4">
-          <p class="my-6 text-lg lg:text-xl leading-6 text-slate-600 dark:text-slate-400">
-            You're doing great! Now, tell us which services you would like...
+          <p class="quote-step-description">
+            Choose the inspection package that best fits your needs.
           </p>
           <Message severity="info">
             <div class="inline-flex items-center">
@@ -469,22 +494,22 @@
               </p>
             </div>
           </Message>
-          <div class="grid grid-cols-1 xl:grid-cols-2 gap-5 my-5">
-            <Card class="dark:!bg-slate-900 flex-1 mb-auto border border-slate-400">
+          <div class="quote-packages">
+            <Card class="quote-package">
               <template #content>
-                <div class="flex flex-col text-center items-center mb-3 dark:text-slate-300">
+                <div class="quote-package-heading">
                   <h3 class="text-xl font-bold">Basic</h3>
                   <div class="gray-badge mt-3">Essentials Only</div>
                   <Divider />
                   <p class="text-sm">This is the base package, good for most people's needs.</p>
                   <Button
                     label="Select this Package"
-                    class="my-3 !bg-slate-400 !text-slate-50 lg:!text-sm"
+                    class="quote-package-select"
                     severity="secondary"
                     @click="onSubmitStep4('basic')"
                   />
                 </div>
-                <div class="flex justify-center leading-relaxed">
+                <div class="quote-package-services">
                   <ul>
                     <li class="flex items-center">
                       <i class="pi pi-check-circle text-green-500 me-2"></i>
@@ -536,9 +561,9 @@
                 </div>
               </template>
             </Card>
-            <Card class="dark:!bg-slate-900 flex-1 mb-auto border border-green-500">
+            <Card class="quote-package quote-package--premium">
               <template #content>
-                <div class="flex flex-col text-center items-center mb-3 dark:text-slate-300">
+                <div class="quote-package-heading">
                   <h3 class="text-xl font-bold">Premium</h3>
                   <div class="green-badge mt-3">Most Popular</div>
                   <Divider />
@@ -547,12 +572,12 @@
                   </p>
                   <Button
                     label="Select this Package"
-                    class="my-3 lg:!text-sm"
+                    class="quote-package-select"
                     severity="success"
                     @click="onSubmitStep4('premium')"
                   />
                 </div>
-                <div class="flex justify-center leading-relaxed">
+                <div class="quote-package-services">
                   <ul>
                     <li class="flex items-center">
                       <i class="pi pi-check-circle text-green-500 me-2"></i>
@@ -604,21 +629,21 @@
                 </div>
               </template>
             </Card>
-            <Card class="dark:!bg-slate-900 flex-1 mb-auto border-blue-500 border">
+            <Card class="quote-package">
               <template #content>
-                <div class="flex flex-col text-center items-center mb-3 dark:text-slate-300">
+                <div class="quote-package-heading">
                   <p class="text-xl font-bold">Pre-Listing Inspection</p>
                   <div class="blue-badge mt-3">Seller's Choice</div>
                   <Divider />
                   <p class="text-sm">Selling your home? This package is for you.</p>
                   <Button
                     label="Select this Package"
-                    class="my-3 !text-slate-50 lg:!text-sm"
+                    class="quote-package-select"
                     severity="info"
                     @click="onSubmitStep4('pre_listing')"
                   />
                 </div>
-                <div class="flex justify-center leading-relaxed">
+                <div class="quote-package-services">
                   <ul>
                     <li class="flex items-center">
                       <i class="pi pi-check-circle text-green-500 me-2"></i>
@@ -670,21 +695,21 @@
                 </div>
               </template>
             </Card>
-            <Card class="dark:!bg-slate-900 flex-1 mb-auto border border-yellow-500">
+            <Card class="quote-package">
               <template #content>
-                <div class="flex flex-col text-center items-center mb-3 dark:text-slate-300">
+                <div class="quote-package-heading">
                   <p class="text-xl font-bold">Insurance Only</p>
                   <div class="gold-badge mt-3">Insurance-Ready</div>
                   <Divider />
                   <p class="text-sm">Shopping new insurance? Choose this package!</p>
                   <Button
                     label="Select this Package"
-                    class="my-3 !bg-yellow-400 !text-slate-50 lg:!text-sm"
+                    class="quote-package-select"
                     severity="secondary"
                     @click="onSubmitStep4('insurance_only')"
                   />
                 </div>
-                <div class="flex justify-center leading-relaxed">
+                <div class="quote-package-services">
                   <ul>
                     <li class="flex items-center">
                       <i class="pi pi-check-circle text-green-500 me-2"></i>
@@ -736,20 +761,20 @@
                 </div>
               </template>
             </Card>
-            <Card class="dark:!bg-slate-900 flex-1 mb-auto" v-if="newConstructionEligible">
+            <Card class="quote-package" v-if="newConstructionEligible">
               <template #content>
-                <div class="flex flex-col text-center items-center mb-3 dark:text-slate-300">
+                <div class="quote-package-heading">
                   <p class="text-xl font-bold">New Construction Inspection</p>
                   <Divider />
                   <p class="text-sm">Purchasing a brand new house? Choose this package!</p>
                   <Button
                     label="Select this Package"
-                    class="my-3 !bg-slate-400 !text-slate-50 lg:!text-sm"
+                    class="quote-package-select"
                     severity="secondary"
                     @click="onSubmitStep4('new_construction')"
                   />
                 </div>
-                <div class="flex justify-center leading-relaxed">
+                <div class="quote-package-services">
                   <ul>
                     <li class="flex items-center">
                       <i class="pi pi-check-circle text-green-500 me-2"></i>
@@ -787,144 +812,145 @@
               </template>
             </Card>
           </div>
-          <div class="flex gap-5 justify-center">
-            <Button label="Back" class="!text-white" icon="pi pi-arrow-left" @click="goBack" />
+          <div class="quote-actions">
+            <Button label="Back" class="quote-back" icon="pi pi-arrow-left" @click="goBack" />
             <!-- <Button label="Next" type="submit" icon="pi pi-arrow-right" iconPos="right" /> -->
           </div>
         </template>
         <template v-if="step === 5">
-          <p class="my-6 text-lg lg:text-xl leading-6 text-slate-600 dark:text-slate-400">
-            You're almost done! See the services you've selected below and make any changes you
-            would like.
+          <p class="quote-step-description">
+            Review your selected inspections. Add or remove services to make this quote your own.
           </p>
           <Message severity="warn" class="mb-5"
             >If you would like more information on any single service, click the question mark next
             to it.</Message
           >
-          <div v-for="(value, service, index) in form.step5.selected_services" :key="index">
-            <div class="flex flex-row items-center">
-              <div class="flex w-full justify-center flex-col">
-                <label
-                  :for="service"
-                  class="border px-2 py-2 lg:py-2 rounded dark:border-surface-600 flex-1 items-center hover:cursor-pointer hover:border-red-400 dark:bg-slate-900 bg-slate-200 mt-3"
-                >
-                  <Checkbox
-                    binary
-                    :inputId="service"
-                    v-model="form.step5.selected_services[service]"
-                  />
-                  <span class="ms-2 dark:text-gray-400">{{ snakeToNormal(service) }}</span>
-                </label>
-                <Message
-                  v-if="form.step2.year_built < 1973 && service === 'drain_pipe_inspection'"
-                  severity="error"
-                  class="mt-2"
-                >
-                  <div class="inline-flex items-center">
-                    <i class="pi pi-exclamation-triangle me-3"></i>
-                    <div>
-                      <p class="text-xs mb-2">
-                        This property was built before 1973 and may have cast-iron drain pipes.
-                      </p>
-                      <p class="text-xs">We recommend a cast-iron drainpipe camera inspection.</p>
+          <div class="quote-services">
+            <div
+              class="quote-service"
+              :class="{ 'is-selected': value }"
+              v-for="(value, service, index) in form.step5.selected_services"
+              :key="index"
+            >
+              <div class="quote-service-row">
+                <div class="quote-service-content">
+                  <label :for="service" class="quote-service-label">
+                    <Checkbox
+                      binary
+                      :inputId="service"
+                      v-model="form.step5.selected_services[service]"
+                    />
+                    <span class="ms-2 dark:text-gray-400">{{ snakeToNormal(service) }}</span>
+                  </label>
+                  <Message
+                    v-if="form.step2.year_built < 1973 && service === 'drain_pipe_inspection'"
+                    severity="error"
+                    class="mt-2"
+                  >
+                    <div class="inline-flex items-center">
+                      <i class="pi pi-exclamation-triangle me-3"></i>
+                      <div>
+                        <p class="text-xs mb-2">
+                          This property was built before 1973 and may have cast-iron drain pipes.
+                        </p>
+                        <p class="text-xs">We recommend a cast-iron drainpipe camera inspection.</p>
+                      </div>
                     </div>
-                  </div>
-                </Message>
-                <Message
-                  v-if="form.step2.year_built < 1980 && service === 'asbestos_inspection'"
-                  severity="error"
-                  class="mt-2"
-                >
-                  <div class="inline-flex items-center">
-                    <i class="pi pi-exclamation-triangle me-3"></i>
-                    <div>
-                      <p class="text-xs mb-2">
-                        This property was built before 1980 and may have asbestos-containing
-                        building materials.
-                      </p>
-                      <p class="text-xs">
-                        We recommend a asbestos inspection, but it may be better to wait for your
-                        inspector's recommendation.
-                      </p>
+                  </Message>
+                  <Message
+                    v-if="form.step2.year_built < 1980 && service === 'asbestos_inspection'"
+                    severity="error"
+                    class="mt-2"
+                  >
+                    <div class="inline-flex items-center">
+                      <i class="pi pi-exclamation-triangle me-3"></i>
+                      <div>
+                        <p class="text-xs mb-2">
+                          This property was built before 1980 and may have asbestos-containing
+                          building materials.
+                        </p>
+                        <p class="text-xs">
+                          We recommend a asbestos inspection, but it may be better to wait for your
+                          inspector's recommendation.
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </Message>
-                <Message
-                  v-if="form.step2.year_built < 1978 && service === 'lead_based_paint_inspection'"
-                  severity="error"
-                  class="mt-2"
-                >
-                  <div class="inline-flex items-center">
-                    <i class="pi pi-exclamation-triangle me-3"></i>
-                    <div>
-                      <p class="text-xs mb-2">
-                        This property was built before 1978 and may have lead-based paint.
-                      </p>
-                      <p class="text-xs">
-                        We recommend a lead-based paint inspection, but it may be better to wait for
-                        your inspector's recommendation.
-                      </p>
+                  </Message>
+                  <Message
+                    v-if="form.step2.year_built < 1978 && service === 'lead_based_paint_inspection'"
+                    severity="error"
+                    class="mt-2"
+                  >
+                    <div class="inline-flex items-center">
+                      <i class="pi pi-exclamation-triangle me-3"></i>
+                      <div>
+                        <p class="text-xs mb-2">
+                          This property was built before 1978 and may have lead-based paint.
+                        </p>
+                        <p class="text-xs">
+                          We recommend a lead-based paint inspection, but it may be better to wait
+                          for your inspector's recommendation.
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </Message>
-                <Message
-                  v-if="form.step3.extra_structure && service === 'extra_structure_inspection'"
-                  severity="info"
-                  class="mt-2"
-                >
-                  <div class="inline-flex items-center">
-                    <i class="pi pi-info-circle me-3"></i>
-                    <div>
-                      <p class="text-xs mb-2">
-                        You indicated that this property has an extra structure.
-                      </p>
-                      <p class="text-xs">Select this service if you would like it inspected.</p>
+                  </Message>
+                  <Message
+                    v-if="form.step3.extra_structure && service === 'extra_structure_inspection'"
+                    severity="info"
+                    class="mt-2"
+                  >
+                    <div class="inline-flex items-center">
+                      <i class="pi pi-info-circle me-3"></i>
+                      <div>
+                        <p class="text-xs mb-2">
+                          You indicated that this property has an extra structure.
+                        </p>
+                        <p class="text-xs">Select this service if you would like it inspected.</p>
+                      </div>
                     </div>
-                  </div>
-                </Message>
-                <Message
-                  v-if="form.step3.seawall && service === 'seawall_inspection'"
-                  severity="info"
-                  class="mt-2"
-                >
-                  <div class="inline-flex items-center">
-                    <i class="pi pi-info-circle me-3"></i>
-                    <div>
-                      <p class="text-xs mb-2">You indicated that this property has a seawall.</p>
-                      <p class="text-xs">Select this service if you would like it inspected.</p>
+                  </Message>
+                  <Message
+                    v-if="form.step3.seawall && service === 'seawall_inspection'"
+                    severity="info"
+                    class="mt-2"
+                  >
+                    <div class="inline-flex items-center">
+                      <i class="pi pi-info-circle me-3"></i>
+                      <div>
+                        <p class="text-xs mb-2">You indicated that this property has a seawall.</p>
+                        <p class="text-xs">Select this service if you would like it inspected.</p>
+                      </div>
                     </div>
-                  </div>
-                </Message>
-                <Message
-                  v-if="form.step3.crawlspace && service === 'crawlspace_inspection'"
-                  severity="info"
-                  class="mt-2"
-                >
-                  <div class="inline-flex items-center">
-                    <i class="pi pi-info-circle me-3"></i>
-                    <div>
-                      <p class="text-xs mb-2">You indicated that this property has a crawlspace.</p>
-                      <p class="text-xs">Select this service if you would like it inspected.</p>
+                  </Message>
+                  <Message
+                    v-if="form.step3.crawlspace && service === 'crawlspace_inspection'"
+                    severity="info"
+                    class="mt-2"
+                  >
+                    <div class="inline-flex items-center">
+                      <i class="pi pi-info-circle me-3"></i>
+                      <div>
+                        <p class="text-xs mb-2">
+                          You indicated that this property has a crawlspace.
+                        </p>
+                        <p class="text-xs">Select this service if you would like it inspected.</p>
+                      </div>
                     </div>
-                  </div>
-                </Message>
+                  </Message>
+                </div>
+                <button
+                  type="button"
+                  class="quote-service-help"
+                  :aria-label="`About ${snakeToNormal(service)}`"
+                  @click="showServiceInfoDialog(service)"
+                >
+                  <i class="pi pi-question-circle" aria-hidden="true"></i>
+                </button>
               </div>
-              <span class="hidden lg:block" @click="showServiceInfoDialog(service)">
-                <i
-                  class="pi pi-question-circle text-blue-500 ms-2 hover:cursor-pointer mt-4"
-                  style="font-size: 2rem"
-                ></i>
-              </span>
-              <span class="block lg:hidden" @click="showServiceInfoDialog(service)">
-                <i
-                  class="pi pi-question-circle text-blue-500 ms-2 hover:cursor-pointer mt-4"
-                  style="font-size: 2rem"
-                ></i>
-              </span>
             </div>
           </div>
-          <div class="flex gap-5 justify-center mt-5">
-            <Button label="Back" icon="pi pi-arrow-left" @click="goBack" />
+          <div class="quote-actions">
+            <Button label="Back" class="quote-back" icon="pi pi-arrow-left" @click="goBack" />
             <Button
               label="Next"
               icon="pi pi-arrow-right"
@@ -935,8 +961,8 @@
           </div>
         </template>
         <template v-if="step === 6">
-          <p class="my-6 text-lg lg:text-xl leading-6 text-slate-600 dark:text-slate-400">
-            The last step! Select a couple of dates that may work for the inspection.
+          <p class="quote-step-description">
+            Share a few dates that work for you. Our team will confirm availability.
           </p>
           <Message severity="info" class="mb-5">
             <div class="flex items-center">
@@ -944,62 +970,78 @@
               Not sure? Don't worry! You can skip this step by clicking 'Get Your Quote' below.
             </div>
           </Message>
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
-            <DatePicker
-              v-model="form.step6.date_1"
-              showTime
-              hourFormat="12"
-              :stepMinute="30"
-              :minTime="minTime"
-              :maxTime="maxTime"
-              :minDate="minDate"
-              showIcon
-              fluid
-              iconDisplay="input"
-              placeholder="Date 1"
-            />
-            <DatePicker
-              v-model="form.step6.date_2"
-              showTime
-              hourFormat="12"
-              :stepMinute="30"
-              :minTime="minTime"
-              :maxTime="maxTime"
-              :minDate="minDate"
-              showIcon
-              fluid
-              iconDisplay="input"
-              placeholder="Date 2"
-            />
-            <DatePicker
-              v-model="form.step6.date_3"
-              showTime
-              hourFormat="12"
-              :stepMinute="30"
-              :minTime="minTime"
-              :maxTime="maxTime"
-              :minDate="minDate"
-              showIcon
-              fluid
-              iconDisplay="input"
-              placeholder="Date 3"
-            />
-            <DatePicker
-              v-model="form.step6.date_4"
-              showTime
-              hourFormat="12"
-              :stepMinute="30"
-              :minTime="minTime"
-              :maxTime="maxTime"
-              :minDate="minDate"
-              showIcon
-              fluid
-              iconDisplay="input"
-              placeholder="Date 4"
-            />
+          <div class="quote-fields quote-date-fields">
+            <div class="quote-field">
+              <label for="quote-date-1">Preferred date 1 <span>(optional)</span></label
+              ><DatePicker
+                inputId="quote-date-1"
+                v-model="form.step6.date_1"
+                showTime
+                hourFormat="12"
+                :stepMinute="30"
+                :minTime="minTime"
+                :maxTime="maxTime"
+                :minDate="minDate"
+                showIcon
+                fluid
+                iconDisplay="input"
+                placeholder="Choose a date and time"
+              />
+            </div>
+            <div class="quote-field">
+              <label for="quote-date-2">Preferred date 2 <span>(optional)</span></label
+              ><DatePicker
+                inputId="quote-date-2"
+                v-model="form.step6.date_2"
+                showTime
+                hourFormat="12"
+                :stepMinute="30"
+                :minTime="minTime"
+                :maxTime="maxTime"
+                :minDate="minDate"
+                showIcon
+                fluid
+                iconDisplay="input"
+                placeholder="Choose a date and time"
+              />
+            </div>
+            <div class="quote-field">
+              <label for="quote-date-3">Preferred date 3 <span>(optional)</span></label
+              ><DatePicker
+                inputId="quote-date-3"
+                v-model="form.step6.date_3"
+                showTime
+                hourFormat="12"
+                :stepMinute="30"
+                :minTime="minTime"
+                :maxTime="maxTime"
+                :minDate="minDate"
+                showIcon
+                fluid
+                iconDisplay="input"
+                placeholder="Choose a date and time"
+              />
+            </div>
+            <div class="quote-field">
+              <label for="quote-date-4">Preferred date 4 <span>(optional)</span></label
+              ><DatePicker
+                inputId="quote-date-4"
+                v-model="form.step6.date_4"
+                showTime
+                hourFormat="12"
+                :stepMinute="30"
+                :minTime="minTime"
+                :maxTime="maxTime"
+                :minDate="minDate"
+                showIcon
+                fluid
+                iconDisplay="input"
+                placeholder="Choose a date and time"
+              />
+            </div>
           </div>
-          <div class="flex justify-center gap-5">
-            <Button label="Back" icon="pi pi-arrow-left" @click="goBack" />
+          <div class="quote-actions">
+            <Button label="Back" class="quote-back" icon="pi pi-arrow-left" @click="goBack" />
             <Button
               label="Get Your Quote"
               icon="pi pi-check-circle"
@@ -1009,62 +1051,9 @@
             />
           </div>
         </template>
-        <Divider />
-        <div class="mt-5 lg:hidden text-center">
-          <div class="text-lg lg:text-2xl leading-6 font-medium text-slate-400 dark:text-slate-0">
-            Prefer speaking to someone? Click below to call our office!
-          </div>
-          <div class="text-base lg:text-xl leading-6 font-medium text-blue-500 dark:text-red-0">
-            (954) 252-9980
-          </div>
-          <div class="text-base lg:text-xl leading-6 font-medium text-blue-500 dark:text-slate-0">
-            office@diversifiedhomeinspections.com
-          </div>
-          <div class="flex items-center justify-center gap-3 mt-3.5">
-            <a
-              href="https://www.instagram.com/diversified_home_inspections/"
-              class="text-slate-400 text-base lg:text-lg dark:text-slate-0 bg-slate-0 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-700 transition-all border border-slate-300 dark:border-slate-800 rounded-full w-12 h-12 lg:w-9 lg:h-9 flex items-center justify-center"
-            >
-              <i class="pi pi-instagram" style="font-size: 1.5rem" />
-            </a>
-            <a
-              href="https://www.facebook.com/diversifiedhomeinspections/"
-              class="text-slate-400 text-base lg:text-lg dark:text-slate-0 bg-slate-0 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-700 transition-all border border-slate-300 dark:border-slate-800 rounded-full w-12 h-12 lg:w-9 lg:h-9 flex items-center justify-center"
-            >
-              <i class="pi pi-facebook" style="font-size: 1.5rem" />
-            </a>
-            <a
-              href="https://x.com/divhomeinsp"
-              class="text-slate-400 text-base lg:text-lg dark:text-slate-0 bg-slate-0 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-700 transition-all border border-slate-300 dark:border-slate-800 rounded-full w-12 h-12 lg:w-9 lg:h-9 flex items-center justify-center"
-            >
-              <i class="pi pi-twitter" style="font-size: 1.5rem" />
-            </a>
-            <a
-              href="https://www.linkedin.com/company/diversified-home-inspections"
-              class="text-slate-400 text-base lg:text-lg dark:text-slate-0 bg-slate-0 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-700 transition-all border border-slate-300 dark:border-slate-800 rounded-full w-12 h-12 lg:w-9 lg:h-9 flex items-center justify-center"
-            >
-              <i class="pi pi-linkedin" style="font-size: 1.5rem" />
-            </a>
-            <a
-              href="https://www.youtube.com/@diversifiedhomeinspections"
-              class="text-slate-400 text-base lg:text-lg dark:text-slate-0 bg-slate-0 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-700 transition-all border border-slate-300 dark:border-slate-800 rounded-full w-12 h-12 lg:w-9 lg:h-9 flex items-center justify-center"
-            >
-              <i class="pi pi-youtube" style="font-size: 1.5rem" />
-            </a>
-            <a
-              href="https://www.google.com/search?q=diversified+home+inspections+southwest+ranches+fl"
-              class="text-slate-400 text-base lg:text-lg dark:text-slate-0 bg-slate-0 hover:bg-slate-100 dark:bg-slate-900 dark:hover:bg-slate-700 transition-all border border-slate-300 dark:border-slate-800 rounded-full w-12 h-12 lg:w-9 lg:h-9 flex items-center justify-center"
-            >
-              <i class="pi pi-google" style="font-size: 1.5rem" />
-            </a>
-          </div>
-        </div>
-      </div>
+      </section>
     </div>
-    <div
-      v-else
-      class="py-10 px-5 lg:p-14 rounded-3xl bg-slate-100 dark:bg-slate-800 flex items-start lg:flex-row flex-col gap-10 lg:gap-[4.5rem]"
-    >
+    <div v-else class="quote-complete-panel">
       <div class="flex items-center gap-5 mx-auto" v-if="step === 7">
         <ProgressSpinner
           style="width: 50px; height: 50px"
@@ -1077,9 +1066,19 @@
       </div>
       <div v-if="step === 8" class="flex justify-center mx-auto flex-col text-center">
         <img :src="appStore.logoSrc" alt="" class="w-64 mx-auto mb-10" />
-        <h1 class="text-5xl font-extrabold mb-5">Thank You!</h1>
-        <p class="text-xl">Your inspection quote request has been submitted.</p>
-        <p class="text-xl">Check your email inbox to find your quote now!</p>
+        <h2 class="text-4xl font-semibold mb-5">
+          {{ isPreview ? 'Preview complete' : 'Thank you!' }}
+        </h2>
+        <p class="text-xl">
+          {{
+            isPreview
+              ? 'No request was sent and no conversion was recorded.'
+              : 'Your inspection quote request has been submitted.'
+          }}
+        </p>
+        <p v-if="!isPreview" class="text-xl">
+          Please check your email for your quote. Our team will confirm availability.
+        </p>
 
         <div class="mt-5 dark:text-surface-400">
           <p class="text-medium font-light">Diversified Home Inspections, Inc.</p>
@@ -1135,88 +1134,22 @@
     </div>
   </div>
 
-  <Dialog
+  <ServiceInfoDialog
     v-model:visible="serviceInfoDialogVisible"
-    modal
-    :header="serviceInfoHeader"
-    class="w-[40rem]"
-  >
-    <GeneralInspection
-      v-if="selectedInfoService === 'general_inspection'"
-      @closeModal="serviceInfoDialogVisible = false"
-    />
-    <PoolInspection
-      v-if="selectedInfoService === 'pool_inspection'"
-      @closeModal="serviceInfoDialogVisible = false"
-    />
-    <RoofInspection
-      v-if="selectedInfoService === 'roof_inspection'"
-      @closeModal="serviceInfoDialogVisible = false"
-    />
-    <TermiteInspection
-      v-if="selectedInfoService === 'termite_inspection'"
-      @closeModal="serviceInfoDialogVisible = false"
-    />
-    <WindMitigationInspection
-      v-if="selectedInfoService === 'wind_mitigation'"
-      @closeModal="serviceInfoDialogVisible = false"
-    />
-    <FourPointInspection
-      v-if="selectedInfoService === 'four_point'"
-      @closeModal="serviceInfoDialogVisible = false"
-    />
-    <MoldAirSamples
-      v-if="selectedInfoService === 'mold_air_samples'"
-      @closeModal="serviceInfoDialogVisible = false"
-    />
-    <ThermalImagingInspection
-      v-if="selectedInfoService === 'thermal_imaging'"
-      @closeModal="serviceInfoDialogVisible = false"
-    />
-    <ExtraStructureInspection
-      v-if="selectedInfoService === 'extra_structure_inspection'"
-      @closeModal="serviceInfoDialogVisible = false"
-    />
-    <CrawlspaceInspection
-      v-if="selectedInfoService === 'crawlspace_inspection'"
-      @closeModal="serviceInfoDialogVisible = false"
-    />
-    <SeawallInspection
-      v-if="selectedInfoService === 'seawall_inspection'"
-      @closeModal="serviceInfoDialogVisible = false"
-    />
-    <DrainPipeInspection
-      v-if="selectedInfoService === 'drain_pipe_inspection'"
-      @closeModal="serviceInfoDialogVisible = false"
-    />
-    <AsbestosInspection
-      v-if="selectedInfoService === 'asbestos_inspection'"
-      @closeModal="serviceInfoDialogVisible = false"
-    />
-    <LeadBasedPaintInspection
-      v-if="selectedInfoService === 'lead_based_paint_inspection'"
-      @closeModal="serviceInfoDialogVisible = false"
-    />
-    <WellWaterInspection
-      v-if="selectedInfoService === 'well_water_inspection'"
-      @closeModal="serviceInfoDialogVisible = false"
-    />
-    <CosmeticConditionsInspection
-      v-if="selectedInfoService === 'cosmetic_conditions'"
-      @closeModal="serviceInfoDialogVisible = false"
-    />
-  </Dialog>
+    :service="selectedInfoService"
+    :title="serviceInfoHeader"
+  />
 </template>
 <script setup>
 import Button from 'primevue/button'
+import ServiceInfoDialog from '@/components/campaign/ServiceInfoDialog.vue'
+import BasicDetailsOption from '@/components/campaign/BasicDetailsOption.vue'
 import InputText from 'primevue/inputtext'
 import {
   ProgressBar,
   Message,
-  FloatLabel,
   InputMask,
   Checkbox,
-  Dialog,
   Textarea,
   Divider,
   Card,
@@ -1224,29 +1157,17 @@ import {
   DatePicker,
   Select,
   ProgressSpinner,
+  Tag,
 } from 'primevue'
 import { Form } from '@primevue/forms'
-import { onMounted, reactive, ref, computed, nextTick, watch } from 'vue'
+import { onMounted, onUnmounted, reactive, ref, computed, nextTick, watch } from 'vue'
+import { isProductionHost, sendLead, trackLead } from '@/utils/campaign'
+import { loadGoogleMaps } from '@/utils/maps'
 import { useAppStore } from '@/stores/appStore'
 import { calculateInspectionPrice } from '@/utils/inspectionPriceCalculator.js'
+import { useRoute } from 'vue-router'
 
-import GeneralInspection from '@/partials/dialog/generalInspection.vue'
-import PoolInspection from '@/partials/dialog/poolInspection.vue'
-import RoofInspection from '@/partials/dialog/roofInspection.vue'
-import TermiteInspection from '@/partials/dialog/termiteInspection.vue'
-import WindMitigationInspection from '@/partials/dialog/windMitigationInspection.vue'
-import FourPointInspection from '@/partials/dialog/fourPointInspection.vue'
-import MoldAirSamples from '@/partials/dialog/moldAirSamples.vue'
-import ThermalImagingInspection from '@/partials/dialog/thermalImagingInspection.vue'
-import ExtraStructureInspection from '@/partials/dialog/extraStructureInspection.vue'
-import CrawlspaceInspection from '@/partials/dialog/crawlspaceInspection.vue'
-import SeawallInspection from '@/partials/dialog/seawallInspection.vue'
-import DrainPipeInspection from '@/partials/dialog/drainPipeInspection.vue'
-import AsbestosInspection from '@/partials/dialog/asbestosInspection.vue'
-import LeadBasedPaintInspection from '@/partials/dialog/leadBasedPaintInspection.vue'
-import WellWaterInspection from '@/partials/dialog/wellWaterInspection.vue'
-import CosmeticConditionsInspection from '@/partials/dialog/cosmeticConditionsInspection.vue'
-
+const route = useRoute()
 const appStore = useAppStore()
 const serviceInfoDialogVisible = ref(false)
 const selectedInfoService = ref(null)
@@ -1254,7 +1175,9 @@ const serviceInfoHeader = ref(null)
 const minDate = ref(new Date())
 const today = new Date()
 const minTime = ref(new Date(today.setHours(8, 0, 0, 0))) // 8:00 AM
-const maxTime = ref(new Date(today.setHours(6, 0, 0, 0))) // 6:00 PM
+const maxTime = ref(new Date(today.setHours(18, 0, 0, 0))) // 6:00 PM
+
+const discount = route.query.discount
 
 // Get current year for year built input
 const currentYear = new Date().getFullYear()
@@ -1462,6 +1385,23 @@ const propertyTypes = [
   { key: 'commercial', value: 'Commercial Property' },
 ]
 
+const quoteSteps = [
+  { short: 'Contact', title: 'Let’s start with you.', detail: 'Where to send your quote' },
+  { short: 'Property', title: 'Tell us about the property.', detail: 'Address, size and age' },
+  {
+    short: 'Features',
+    title: 'Every home is different.',
+    detail: 'The details that make it yours',
+  },
+  {
+    short: 'Package',
+    title: 'Choose your starting point.',
+    detail: 'Find the right inspection package',
+  },
+  { short: 'Services', title: 'Make it your own.', detail: 'Review and refine your inspections' },
+  { short: 'Dates', title: 'When works for you?', detail: 'Share your preferred dates' },
+]
+
 const step = ref(1)
 const propertySelected = ref(false)
 const totalSteps = 6
@@ -1629,8 +1569,19 @@ const THANK_YOU_URL = 'https://diversifiedhomeinspections.com/thank-you-for-requ
 function buildRedirectUrl() {
   const url = new URL(THANK_YOU_URL)
   // Preserve UTM params if you have them in appStore
-  ;['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach((k) => {
-    if (appStore?.[k]) url.searchParams.set(k, appStore[k])
+  ;[
+    'utm_source',
+    'utm_medium',
+    'utm_campaign',
+    'utm_term',
+    'utm_content',
+    'gclid',
+    'gbraid',
+    'wbraid',
+    'msclkid',
+    'fbclid',
+  ].forEach((k) => {
+    if (appStore.utmParams?.[k]) url.searchParams.set(k, appStore.utmParams[k])
   })
   return url.toString()
 }
@@ -1640,10 +1591,17 @@ function redirectNow() {
   window.location.replace(buildRedirectUrl())
 }
 
-const onSubmitStep6 = () => {
-  step.value++ // Increment the step initially
+const submissionError = ref('')
+const isSubmitting = ref(false)
+const isPreview = !isProductionHost(window.location.hostname)
 
-  const isCommercial = form.step2.property_type === 'commercial' ? true : false
+const onSubmitStep6 = async () => {
+  if (isSubmitting.value) return
+  isSubmitting.value = true
+  submissionError.value = ''
+  step.value = 7
+
+  const isCommercial = form.step2.property_type.key === 'commercial'
 
   const inspectionFee = calculateInspectionPrice({
     propertyType: form.step2.property_type.key,
@@ -1696,76 +1654,43 @@ const onSubmitStep6 = () => {
         </div>
     `
 
-  // Wait for 3 seconds before moving to the next step
-  setTimeout(async () => {
-    step.value++
-
-    const emailVariables = [
-      {
-        email: form.step1.email,
-        substitutions: {
-          first_name: form.step1.first_name,
-          property_address: fullAddress,
-          square_footage: Number(form.step2.square_footage).toLocaleString(),
-          services: servicesListHTML,
-          quote: '$' + Number(inspectionFee.totalFee).toFixed(2),
-        },
+  const emailVariables = [
+    {
+      email: form.step1.email,
+      substitutions: {
+        first_name: form.step1.first_name,
+        property_address: fullAddress,
+        square_footage: Number(form.step2.square_footage).toLocaleString(),
+        services: servicesListHTML,
+        quote: '$' + Number(inspectionFee.totalFee).toFixed(2),
       },
-    ]
+    },
+  ]
 
-    const payload = {
-      teamEmail: htmlContent,
-      mailersend: emailVariables,
-      inspectionFee: inspectionFee,
+  const payload = {
+    teamEmail: htmlContent,
+    mailersend: emailVariables,
+    inspectionFee: inspectionFee,
+  }
+
+  payload.utm_parameters = JSON.stringify(appStore.utmParams)
+  try {
+    if (isPreview) {
+      step.value = 8
+      return
     }
-
-    // THIS ONE
-    try {
-      const response = await fetch('https://hooks.zapier.com/hooks/catch/5555872/2zr4pdb/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: JSON.stringify(payload),
-      })
-
-      if (response.ok) {
-        // Send event to Google Analytics if available
-        if (window.gtag) {
-          window.gtag('event', 'form_submit', {
-            event_category: 'Engagement',
-            form_name: 'Request Quote Form',
-            page_location: window.location.href, // Include the current page URL
-            utm_source: appStore.utm_source || 'N/A',
-            utm_medium: appStore.utm_medium || 'N/A',
-            utm_campaign: appStore.utm_campaign || 'N/A',
-            utm_term: appStore.utm_term || 'N/A',
-            utm_content: appStore.utm_content || 'N/A',
-            transport_type: 'beacon', // ensure send on unload
-            event_callback: () => redirectNow(),
-          })
-        }
-        // Facebook (Meta) pixel
-        if (window.fbq) {
-          // fbq doesn't reliably support a completion callback, so use a tiny timeout fallback.
-          window.fbq('trackCustom', 'form_submit', {
-            form_name: 'Request Quote',
-            url: window.location.href,
-          })
-          setTimeout(() => redirectNow(), 150)
-        } else {
-          // If no fbq, redirect after GA tries; also add a safety fallback
-          setTimeout(() => redirectNow(), 150)
-        }
-      } else {
-        // Handle non-OK responses
-        const errorText = await response.text()
-        console.error('Server responded with an error:', response.status, errorText)
-      }
-    } catch (error) {
-      console.error('Error submitting form:', error)
-    }
-  }, 3000)
+    await sendLead(payload, fetch, 'https://hooks.zapier.com/hooks/catch/5555872/2zr4pdb/')
+    step.value = 8
+    trackLead('Request Quote Form', 'Detailed estimate', appStore.utmParams)
+    setTimeout(redirectNow, 350)
+  } catch {
+    step.value = 6
+    submissionError.value =
+      'We could not confirm delivery. Please call our office before trying again so we can check your request:'
+    nextTick(() => scrollTo('#form-container'))
+  } finally {
+    isSubmitting.value = false
+  }
 }
 
 const goBack = () => {
@@ -1806,7 +1731,7 @@ const resolver = ({ values }) => {
   if (!values.square_footage) {
     errors.square_footage = [{ message: 'Square footage is required.' }]
   }
-  if (!values.square_footage) {
+  if (!form.step2.property_type?.key) {
     errors.property_type = [{ message: 'Property type is required.' }]
   }
 
@@ -1824,14 +1749,11 @@ const resolver = ({ values }) => {
 const autocompleteInput = ref(null)
 let autocomplete
 
-watch(step, (newStep) => {
+watch(step, async (newStep) => {
   if (newStep === 2) {
+    const ready = await loadGoogleMaps()
+    if (!ready || step.value !== 2) return
     nextTick(() => {
-      if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
-        console.error('Google Maps API is not loaded.')
-        return
-      }
-
       const input = document.getElementById('street_address')
       if (!input) {
         console.error('Input element is not rendered in the DOM.')
@@ -1839,17 +1761,23 @@ watch(step, (newStep) => {
       }
 
       // Initialize Autocomplete
-      autocomplete = new google.maps.places.Autocomplete(input, {
+      autocomplete = new window.google.maps.places.Autocomplete(input, {
         types: ['address'],
         componentRestrictions: { country: 'us' },
       })
 
       autocomplete.addListener('place_changed', () => {
         const place = autocomplete.getPlace()
-        extractAddressComponents(place.address_components)
+        if (place.address_components) extractAddressComponents(place.address_components)
       })
     })
   }
+})
+
+onUnmounted(() => {
+  if (autocomplete && window.google?.maps?.event)
+    window.google.maps.event.clearInstanceListeners(autocomplete)
+  document.body.classList.remove('no-scroll')
 })
 
 onMounted(() => {

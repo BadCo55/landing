@@ -1,60 +1,60 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LandingView from '@/views/LandingView.vue'
-import NotFound from '@/views/NotFound.vue'
-import SampleReport from '@/views/SampleReport.vue'
-import RequestQuoteView from '@/views/RequestQuoteView.vue'
-import InsuranceInspectionView from '@/views/InsuranceInspectionView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: LandingView,
-    },
-    {
-      path: '/:audience',
-      name: 'audience',
-      component: LandingView,
-    },
+    { path: '/', name: 'home', component: LandingView },
+    { path: '/:audience(homebuyer|realtor|investor)', name: 'audience', component: LandingView },
     {
       path: '/insurance-inspection',
       name: 'insurance-inspection',
-      component: InsuranceInspectionView,
+      component: LandingView,
+      meta: { title: 'Insurance Inspections in South Florida | Diversified' },
     },
     {
       path: '/request-quote',
       name: 'quote',
-      component: RequestQuoteView,
+      component: () => import('@/views/CampaignQuoteView.vue'),
+      meta: { title: 'Request Your Inspection Quote | Diversified' },
     },
     {
       path: '/sample-report',
       name: 'sampleReport',
-      component: SampleReport,
+      component: () => import('@/views/CampaignReportView.vue'),
+      meta: { title: 'Explore a Sample Inspection Report | Diversified' },
     },
     {
-      path: '/404',
-      name: '404',
-      component: NotFound,
+      path: '/privacy',
+      name: 'privacy',
+      component: () => import('@/views/PrivacyView.vue'),
+      meta: { title: 'Privacy | Diversified Home Inspections' },
     },
     {
-      path: '/:pathMatch(.*)*', // Catch-all route
+      path: '/:pathMatch(.*)*',
       name: 'NotFound',
-      redirect: '/404', // Redirect to the 404 route
+      component: () => import('@/views/CampaignNotFound.vue'),
+      meta: { title: 'Page Not Found | Diversified' },
     },
   ],
   scrollBehavior(to, from, savedPosition) {
-    if (to.path === '/sample-report') {
-      return { top: 0 };
-    }
-    // Use saved position for browser back/forward
-    if (savedPosition) {
-      return savedPosition;
-    }
-    // Default behavior
+    if (savedPosition) return savedPosition
+    if (to.hash)
+      return {
+        el: to.hash,
+        top: 110,
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
+          ? 'instant'
+          : 'smooth',
+      }
     return { top: 0 }
+  },
+})
+router.beforeEach((to) => {
+  if (to.query['sample-report'] === 'true') {
+    const query = { ...to.query }
+    delete query['sample-report']
+    return { path: '/sample-report', query }
   }
 })
-
 export default router

@@ -1,22 +1,69 @@
-<!DOCTYPE html>
-<html lang="">
+<!doctype html>
+<html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <link rel="icon" href="/favicon.ico">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vite App</title>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-M1NQ4817BS"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="googlebot" content="noindex, nofollow" />
+    <meta name="theme-color" content="#c92828" />
+    <meta
+      name="description"
+      content="Thorough home and insurance inspections in Broward, Miami-Dade, and Palm Beach. Clear reports, repair estimates, and local expertise since 1998. Request your free quote."
+    />
+    <meta name="author" content="Diversified Home Inspections, Inc." />
+    <link rel="icon" href="/favicon.ico" />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/manrope-latin.woff2" crossorigin />
+    <link rel="preload" as="image" href="/img/campaign/home.jpg" />
+    <title>South Florida Home Inspections | Diversified</title>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-M1NQ4817BS');
+      // Preview visits and test submissions must not contaminate live campaign data.
+      if (window.location.hostname === 'landing.diversifiedhomeinspections.com') {
+        window.dataLayer = window.dataLayer || []
+        window.gtag = function () {
+          window.dataLayer.push(arguments)
+        }
+        window.gtag('js', new Date())
+        window.gtag('config', 'G-4SNFF2NPXN')
+        var ga = document.createElement('script')
+        ga.async = true
+        ga.src = 'https://www.googletagmanager.com/gtag/js?id=G-4SNFF2NPXN'
+        document.head.appendChild(ga)
+        !(function (f, b, e, v, n, t, s) {
+          if (f.fbq) return
+          n = f.fbq = function () {
+            n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+          }
+          if (!f._fbq) f._fbq = n
+          n.push = n
+          n.loaded = !0
+          n.version = '2.0'
+          n.queue = []
+          t = b.createElement(e)
+          t.async = !0
+          t.src = v
+          s = b.getElementsByTagName(e)[0]
+          s.parentNode.insertBefore(t, s)
+        })(window, document, 'script', 'https://connect.facebook.net/en_US/fbevents.js')
+        window.fbq('init', '5092520094149116')
+      }
     </script>
-    <script type="module" crossorigin src="/assets/index-BR0ulhMJ.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-zSe7D16c.css">
+    <script type="module" crossorigin src="/assets/index-D2QnQ2Zq.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-Bo2Q43Md.css">
   </head>
   <body>
     <div id="app"></div>
+    <noscript
+      ><main
+        style="font-family: Arial, sans-serif; max-width: 640px; margin: 60px auto; padding: 24px"
+      >
+        <h1>Diversified Home Inspections</h1>
+        <p>Thorough inspections in Broward, Miami-Dade, and Palm Beach since 1998.</p>
+        <p>
+          Call <a href="tel:+19542529980">(954) 252-9980</a> to discuss your property and request a
+          quote.
+        </p>
+        <p>Please enable JavaScript to use the online quote form and explore sample reports.</p>
+      </main></noscript
+    >
   </body>
 </html>

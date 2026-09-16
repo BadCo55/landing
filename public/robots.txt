@@ -1,0 +1,4 @@
+# Crawling must remain allowed so search engines can read the noindex directive.
+# Indexing is disabled in the HTML and X-Robots-Tag response header.
+User-agent: *
+Allow: /
