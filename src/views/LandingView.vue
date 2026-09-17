@@ -6,6 +6,7 @@ import SiteFooter from '@/components/campaign/SiteFooter.vue'
 import QuoteForm from '@/components/campaign/QuoteForm.vue'
 import Icon from '@/components/campaign/Icon.vue'
 import { trackEvent } from '@/utils/campaign'
+import { INSPECTION_REQUEST_URL } from '@/utils/inspectionIntent'
 import '@/assets/styles/campaign.css'
 const route = useRoute()
 const audience = computed(
@@ -168,12 +169,12 @@ const reviews = [
             </h1>
             <p class="hero-description">{{ copy.description }}</p>
             <div class="hero-actions">
-              <RouterLink
+              <a
                 class="button button-primary"
-                to="/request-quote"
+                :href="INSPECTION_REQUEST_URL"
                 @click="quoteClick('hero')"
                 >Build my inspection quote <span class="button-icon"><Icon name="arrow" /></span
-              ></RouterLink>
+              ></a>
               <RouterLink
                 class="hero-report-link"
                 to="/sample-report"
@@ -328,9 +329,9 @@ const reviews = [
             <h3>{{ service.name }}</h3>
             <p>{{ service.description }}</p>
             <div class="service-detail">{{ service.detail }}</div>
-            <RouterLink to="/request-quote" @click="quoteClick('service_card', service.selection)"
+            <a :href="INSPECTION_REQUEST_URL" @click="quoteClick('service_card', service.selection)"
               >Get a quote <Icon name="arrow"
-            /></RouterLink>
+            /></a>
           </article>
         </div>
         <p class="service-note">
@@ -434,12 +435,12 @@ const reviews = [
               <li><Icon name="check" /> Inspection packages and service options</li>
               <li><Icon name="check" /> Your preferred inspection dates</li>
             </ul>
-            <RouterLink
+            <a
               class="button button-primary"
-              to="/request-quote"
+              :href="INSPECTION_REQUEST_URL"
               @click="quoteClick('quote_section')"
               >Build my inspection quote <Icon name="arrow"
-            /></RouterLink>
+            /></a>
             <p class="qualification-note">
               Have the property address, year built, and total square footage handy. No payment
               required.
@@ -493,9 +494,12 @@ const reviews = [
             <p class="eyebrow">ONE CALL DOES IT ALL.</p>
             <h2>Your property. Our expertise.</h2>
           </div>
-          <RouterLink class="button button-light" to="/request-quote" @click="quoteClick('closing')"
+          <a
+            class="button button-light"
+            :href="INSPECTION_REQUEST_URL"
+            @click="quoteClick('closing')"
             >Let’s get started <Icon name="arrow"
-          /></RouterLink>
+          /></a>
         </div>
       </section>
     </main>
@@ -503,12 +507,12 @@ const reviews = [
     <div class="mobile-conversion-bar">
       <a href="tel:+19542529980" @click="trackEvent('phone_click', { placement: 'mobile_bar' })"
         ><Icon name="phone" /> Call DHI</a
-      ><RouterLink
+      ><a
         class="button button-primary"
-        to="/request-quote"
+        :href="INSPECTION_REQUEST_URL"
         @click="quoteClick('mobile_bar')"
         >Build my quote <Icon name="arrow"
-      /></RouterLink>
+      /></a>
     </div>
   </div>
 </template>

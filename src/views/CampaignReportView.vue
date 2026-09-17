@@ -95,9 +95,9 @@ function changeGroup(key) {
               <li><Icon name="check" /> Itemized repair estimates</li>
             </ul>
             <p>Sample pricing illustrates report format and is not a current repair quote.</p>
-            <RouterLink :to="quoteTo" class="button button-primary"
+            <a :href="quoteTo" class="button button-primary"
               >Build my inspection quote <Icon name="arrow"
-            /></RouterLink>
+            /></a>
           </aside>
           <div class="report-document">
             <div class="report-pagination">

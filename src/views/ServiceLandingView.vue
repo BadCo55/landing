@@ -52,9 +52,9 @@ function quoteClick(placement) {
                 {{ page.headline }}<em>{{ page.accent }}</em>
               </h1>
               <p class="service-hero-intro">{{ page.intro }}</p>
-              <RouterLink :to="quoteTo" class="service-primary" @click="quoteClick('service_hero')"
+              <a :href="quoteTo" class="service-primary" @click="quoteClick('service_hero')"
                 >{{ page.cta }}<span><Icon name="diagonal" /></span
-              ></RouterLink>
+              ></a>
               <p class="service-hero-note">
                 A detailed request. A personal follow-up from our team.
               </p>
@@ -173,12 +173,9 @@ function quoteClick(placement) {
                 <Icon name="report" />
                 <p>{{ page.takeaway }}</p>
               </div>
-              <RouterLink
-                :to="quoteTo"
-                class="service-text-link"
-                @click="quoteClick('service_insight')"
+              <a :href="quoteTo" class="service-text-link" @click="quoteClick('service_insight')"
                 >{{ page.cta }}<Icon name="diagonal"
-              /></RouterLink>
+              /></a>
             </div>
           </div>
           <p class="service-outcome">{{ page.outcome }}</p>
@@ -290,12 +287,9 @@ function quoteClick(placement) {
               </p>
             </div>
             <div class="service-convert-action">
-              <RouterLink
-                :to="quoteTo"
-                class="service-primary"
-                @click="quoteClick('service_bottom')"
+              <a :href="quoteTo" class="service-primary" @click="quoteClick('service_bottom')"
                 >{{ page.cta }}<span><Icon name="diagonal" /></span
-              ></RouterLink>
+              ></a>
               <p>
                 <Icon name="check" />Detailed request recommended<br /><Icon name="check" />No
                 payment to submit
@@ -334,10 +328,10 @@ function quoteClick(placement) {
     <SiteFooter />
     <div class="service-mobile-cta">
       <a href="tel:+19542529980" aria-label="Call Diversified"><Icon name="phone" />Call</a
-      ><RouterLink :to="quoteTo" @click="quoteClick('service_mobile')"
+      ><a :href="quoteTo" @click="quoteClick('service_mobile')"
         >{{ page.key === 'progressive' ? 'Request project review' : 'Request my inspection'
         }}<Icon name="arrow"
-      /></RouterLink>
+      /></a>
     </div>
   </div>
 </template>

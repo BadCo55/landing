@@ -36,12 +36,12 @@ const landingPath = computed(
           ><small>LET’S TALK ABOUT YOUR PROPERTY</small><strong>(954) 252-9980</strong></span
         ></a
       >
-      <RouterLink
+      <a
         class="header-quote button button-primary"
-        :to="quoteTo"
+        :href="quoteTo"
         @click="trackEvent('request_quote_click', { placement: 'header' })"
         >Get a quote <Icon name="diagonal"
-      /></RouterLink>
+      /></a>
     </div>
   </header>
 </template>

@@ -8,9 +8,9 @@ import { renderToString } from 'vue/server-renderer'
 import { createPinia } from 'pinia'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import PrimeVue from 'primevue/config'
-import { inspectionIntents } from '../src/utils/inspectionIntent.js'
+import { inspectionIntents, INSPECTION_REQUEST_URL } from '../src/utils/inspectionIntent.js'
 
-test('service pages render with matching quote links, and the main quote retains its default flow', async () => {
+test('service pages link to the external request page, and the existing form still works', async () => {
   const transport = createHttpServer()
   const server = await createServer({
     configFile: false,
@@ -68,7 +68,10 @@ test('service pages render with matching quote links, and the main quote retains
     for (const [key, context] of Object.entries(inspectionIntents)) {
       const html = await render(Service, context.path)
       assert.match(html, /<h1>/)
-      assert.ok(html.includes('/request-quote?inspection=' + key), key + ' quote context missing')
+      assert.ok(
+        html.includes('href="' + INSPECTION_REQUEST_URL + '"'),
+        key + ' external quote link missing',
+      )
       assert.ok(html.includes(context.label), key + ' service label missing')
       assert.ok(
         html.includes('id="services"') &&
@@ -89,7 +92,7 @@ test('service pages render with matching quote links, and the main quote retains
     assert.ok(invalid.includes('Let’s plan your inspection.'))
     const report = await render(Report, '/sample-report?inspection=general')
     assert.ok(report.includes('href="/general-inspection"'))
-    assert.ok(report.includes('/request-quote?inspection=general'))
+    assert.ok(report.includes('href="' + INSPECTION_REQUEST_URL + '"'))
     // Exercise the actual existing package-selection logic, including feature-rich properties.
     for (const [starter, expected] of [
       ['wind_only', ['wind_mitigation']],

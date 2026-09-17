@@ -286,14 +286,14 @@ async function submit() {
           }}
           <Icon name="diagonal" />
         </button>
-        <RouterLink v-else :to="quoteTo"
+        <a v-else :href="quoteTo"
           >{{
             inspectionIntent === 'progressive'
               ? 'Request a project review'
               : 'Build my inspection quote'
           }}
           <Icon name="diagonal"
-        /></RouterLink>
+        /></a>
       </div>
     </form>
   </div>

@@ -5,6 +5,7 @@ import {
   resolveInspectionIntent,
   inspectionContext,
   inspectionQuoteLink,
+  INSPECTION_REQUEST_URL,
   singleServicePackages,
   isInsurancePackage,
 } from '../src/utils/inspectionIntent.js'
@@ -26,14 +27,11 @@ const project = {
   website: '',
 }
 
-test('each service has a separate quote entry; no inferred intent on the main quote', () => {
+test('quote links use the requested external destination; local intent stays explicit', () => {
   assert.equal(Object.keys(inspectionIntents).length, 8)
   assert.equal(new Set(Object.values(inspectionIntents).map((v) => v.path)).size, 8)
   for (const key of Object.keys(inspectionIntents))
-    assert.deepEqual(inspectionQuoteLink(key), {
-      path: '/request-quote',
-      query: { inspection: key },
-    })
+    assert.equal(inspectionQuoteLink(key), INSPECTION_REQUEST_URL)
   for (const value of [
     undefined,
     null,
@@ -45,7 +43,7 @@ test('each service has a separate quote entry; no inferred intent on the main qu
   ]) {
     assert.equal(resolveInspectionIntent(value), '')
     assert.equal(inspectionContext(value), null)
-    assert.equal(inspectionQuoteLink(value), '/request-quote')
+    assert.equal(inspectionQuoteLink(value), INSPECTION_REQUEST_URL)
   }
 })
 test('single insurance starters select exact services and exclude dynamic property extras', () => {

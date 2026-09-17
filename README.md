@@ -11,6 +11,8 @@ Vue 3 / Vite campaign site for landing.diversifiedhomeinspections.com.
 
 ## Routes and conversion flow
 
+All active quote-request buttons now open `https://diversifiedhomeinspections.com/landing/inspection-request/general` in the same tab. This includes main-page, header, service-page, report-viewer, callback-alternative and mobile buttons. The existing local request forms remain available by their original routes, but are no longer the button destination.
+
 - `/` and `/homebuyer`: homebuyer landing page
 - `/realtor`: agent-specific hero
 - `/investor`: investor-specific hero
@@ -28,7 +30,7 @@ Vue 3 / Vite campaign site for landing.diversifiedhomeinspections.com.
 - `?sample-report=true`: preserved as a redirect to the report viewer
 - `/privacy`: landing-page collection and measurement notice
 
-The main page and its ordinary `/request-quote` entry retain the six-step qualification structure. Dedicated service pages carry an allowlisted `inspection` query through quote/report links; intent is never inherited from a prior visit.
+The main page and its ordinary `/request-quote` entry retain the six-step qualification structure. Dedicated service pages retain allowlisted `inspection` context in report links and existing local forms; intent is never inherited from a prior visit. Quote buttons now use the external destination above.
 
 Insurance, wind and 4-point requests use four relevant steps: contact, property, reports, dates. Wind/4-point start with the requested report selected, and users explicitly review their choices. Unrelated property-feature and general-package steps are omitted. General, commercial, completed construction and maintenance requests retain six steps, with relevant package choices. Maintenance adds homeowner priorities and concerns. The secondary callback option remains available throughout.
 

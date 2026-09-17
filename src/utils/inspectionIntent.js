@@ -69,9 +69,11 @@ export function resolveInspectionIntent(value) {
 export function inspectionContext(value) {
   return inspectionIntents[resolveInspectionIntent(value)] || null
 }
-export function inspectionQuoteLink(value) {
-  const intent = resolveInspectionIntent(value)
-  return intent ? { path: '/request-quote', query: { inspection: intent } } : '/request-quote'
+export const INSPECTION_REQUEST_URL =
+  'https://diversifiedhomeinspections.com/landing/inspection-request/general'
+
+export function inspectionQuoteLink() {
+  return INSPECTION_REQUEST_URL
 }
 export const singleServicePackages = {
   wind_only: ['wind_mitigation'],

@@ -193,7 +193,7 @@ export const serviceLandings = {
     faqs: [
       [
         'Do I need every insurance inspection?',
-        'Not necessarily. Requirements vary by insurer and property. Select wind mitigation, 4-point or roof inspection according to the request from your insurer. The insurance form shows those reports as separate choices.',
+        'Not necessarily. Requirements vary by insurer and property. Request wind mitigation, 4-point or roof inspection according to the requirements from your insurer.',
       ],
       [
         'What is the difference between wind mitigation and 4-point?',
@@ -249,7 +249,7 @@ export const serviceLandings = {
     faqs: [
       [
         'Does wind mitigation include a 4-point inspection?',
-        'They are separate inspections. The wind mitigation request starts with that report selected. Add a 4-point inspection in the service review if your insurer needs both.',
+        'They are separate inspections. Let our team know if your insurer needs both wind mitigation and a 4-point inspection.',
       ],
       insuranceFaq,
       [
@@ -309,7 +309,7 @@ export const serviceLandings = {
       ],
       [
         'Can I request only a 4-point inspection?',
-        'Yes. The 4-point request starts with that report selected. Review it and any additional insurance reports before submitting.',
+        'Yes. Specify that you need a 4-point inspection, along with any additional reports your insurer has requested.',
       ],
       insuranceFaq,
       areaFaq,
@@ -495,7 +495,7 @@ export const serviceLandings = {
       ],
       [
         'How do I choose the new-construction package?',
-        'Enter the home’s year built in the detailed form. The existing quote tool shows the New Construction package for homes built within its eligible new-home range. Contact our office if your situation needs review.',
+        'Tell us that the home is newly completed and share its year built. Our office will help confirm the appropriate inspection scope.',
       ],
       [
         'What if construction is still underway?',
