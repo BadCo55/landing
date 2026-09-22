@@ -1,4 +1,3 @@
-import { resolveInspectionIntent } from './inspectionIntent.js'
 export const ATTRIBUTION_KEYS = [
   'utm_source',
   'utm_medium',
@@ -59,90 +58,5 @@ export function trackEvent(event, properties = {}) {
     })
   } catch {
     /* Analytics must not block visitors. */
-  }
-}
-
-export function trackLead(formName, service, attribution, context = {}) {
-  const project = formName === 'Progressive Project Request'
-  const qualified = formName === 'Request Quote Form' || project
-  const inspection = resolveInspectionIntent(context.inspection)
-  const leadType = project
-    ? 'qualified_project_request'
-    : qualified
-      ? 'qualified_quote'
-      : 'callback'
-  const properties = {
-    form_name: formName,
-    service,
-    lead_type: leadType,
-    ...(inspection ? { inspection_intent: inspection } : {}),
-    ...attribution,
-  }
-  trackEvent('form_submit', properties)
-  trackEvent(qualified ? 'generate_lead' : 'callback_request', properties)
-  if (typeof window !== 'undefined' && isProductionHost(window.location.hostname)) {
-    try {
-      if (qualified)
-        window.fbq?.('track', 'Lead', {
-          content_name: service,
-          content_category: leadType,
-        })
-      else window.fbq?.('trackCustom', 'CallbackRequest', { content_name: service })
-    } catch {
-      /* Optional analytics. */
-    }
-  }
-}
-
-export function validateLead(form) {
-  const errors = {}
-  if (form.name.trim().length < 2) errors.name = 'Please enter your name.'
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim()))
-    errors.email = 'Please enter a valid email address.'
-  const digits = form.phone.replace(/\D/g, '')
-  if (!(digits.length === 10 || (digits.length === 11 && digits.startsWith('1'))))
-    errors.phone = 'Please enter a 10-digit phone number.'
-  if (!form.service) errors.service = 'Please choose an inspection type.'
-  return errors
-}
-
-export function createLeadPayload(form, attribution, audience) {
-  return {
-    name: form.name.trim(),
-    email: form.email.trim(),
-    phone: form.phone.trim(),
-    message: [
-      'Callback request — not a completed inspection quote',
-      'Inspection: ' + form.service,
-      'Property: ' + (form.address.trim() || 'Not provided'),
-      'Campaign audience: ' + audience,
-      form.message.trim(),
-    ]
-      .filter(Boolean)
-      .join('\n'),
-    date: new Date().toISOString(),
-    utm_parameters: JSON.stringify(attribution),
-  }
-}
-
-export async function sendLead(
-  payload,
-  fetcher = fetch,
-  endpoint = 'https://hooks.zapier.com/hooks/catch/5555872/2sxd8wt/',
-) {
-  const controller = new AbortController()
-  const timeout = setTimeout(() => controller.abort(), 20000)
-  try {
-    // Preserve the existing Zap's JSON body and CORS-simple content type.
-    const response = await fetcher(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: JSON.stringify(payload),
-      signal: controller.signal,
-    })
-    if (!response.ok) throw new Error('Lead delivery was not confirmed.')
-    return true
-  } finally {
-    clearTimeout(timeout)
   }
 }

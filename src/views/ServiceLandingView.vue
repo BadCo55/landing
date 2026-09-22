@@ -3,7 +3,7 @@ import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import SiteHeader from '@/components/campaign/SiteHeader.vue'
 import SiteFooter from '@/components/campaign/SiteFooter.vue'
-import QuoteForm from '@/components/campaign/QuoteForm.vue'
+import RequestContactLinks from '@/components/campaign/RequestContactLinks.vue'
 import Icon from '@/components/campaign/Icon.vue'
 import { serviceLandings } from '@/data/serviceLandings'
 import { inspectionQuoteLink } from '@/utils/inspectionIntent'
@@ -301,10 +301,10 @@ function quoteClick(placement) {
               <span
                 ><strong>Don’t have all the information yet?</strong
                 ><span>Start with the basics and we’ll help with the rest.</span></span
-              ><span>Request a callback<Icon name="plus" /></span>
+              ><span>Talk to our team<Icon name="plus" /></span>
             </summary>
             <div>
-              <QuoteForm :service="page.label" :audience="page.key" :inspection-intent="page.key" />
+              <RequestContactLinks placement="service_contact" :inspection-intent="page.key" />
             </div>
           </details>
         </div>

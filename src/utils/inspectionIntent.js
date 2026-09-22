@@ -75,10 +75,3 @@ export const INSPECTION_REQUEST_URL =
 export function inspectionQuoteLink() {
   return INSPECTION_REQUEST_URL
 }
-export const singleServicePackages = {
-  wind_only: ['wind_mitigation'],
-  four_point_only: ['four_point'],
-}
-export function isInsurancePackage(key) {
-  return key === 'insurance_only' || Object.hasOwn(singleServicePackages, key)
-}

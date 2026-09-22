@@ -16,8 +16,8 @@ const router = createRouter({
     {
       path: '/request-quote',
       name: 'quote',
-      component: () => import('@/views/CampaignQuoteView.vue'),
-      meta: { title: 'Request Your Inspection Quote | Diversified' },
+      component: () => import('@/views/RequestRedirectView.vue'),
+      meta: { title: 'Continue to Your Inspection Request | Diversified' },
     },
     {
       path: '/sample-report',
@@ -52,7 +52,7 @@ const router = createRouter({
   },
 })
 router.beforeEach((to) => {
-  if (to.query['sample-report'] === 'true') {
+  if (to.name !== 'quote' && to.query['sample-report'] === 'true') {
     const query = { ...to.query }
     delete query['sample-report']
     return { path: '/sample-report', query }

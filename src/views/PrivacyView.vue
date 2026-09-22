@@ -11,24 +11,17 @@ import SiteFooter from '@/components/campaign/SiteFooter.vue'
       <p>This notice describes information collected through our campaign landing page.</p>
       <h2>When you request an inspection quote</h2>
       <p>
-        We collect the name, email address, phone number, and property or inspection details you
-        provide. We use those details to respond to your request, prepare an estimate, and
-        coordinate services. Submitting this form is a request for contact about your inspection.
+        Quote-request links take you to the request form on our main website. This landing page does
+        not collect or submit contact or property details. Information you provide on the main
+        website is covered by the privacy information provided there.
       </p>
       <h2>Campaign measurement</h2>
       <p>
         Our production landing page uses Google Analytics and Meta Pixel to understand visits and
-        actions such as quote requests and phone-link clicks. These providers may use cookies and
-        similar technologies. Campaign parameters and advertising click identifiers may be stored
-        for your browser session and included with your request so we can understand how you found
-        us.
-      </p>
-      <h2>Service providers</h2>
-      <p>
-        Form information is transmitted through Zapier to support our office workflow. Inspection
-        requests are reviewed by our team, who will follow up about scope, pricing and scheduling.
-        The site does not generate or send an automatic customer quote. Our own analytics events do
-        not include the name, email, phone number, or property address you enter in the form.
+        actions such as quote-request link clicks and phone-link clicks. These providers may use
+        cookies and similar technologies. Campaign parameters and advertising click identifiers may
+        be stored for your browser session to help us understand how you found us. Clicking a
+        request link does not mean an inspection request has been submitted.
       </p>
       <h2>Contact us</h2>
       <p>

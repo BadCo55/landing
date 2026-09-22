@@ -9,7 +9,7 @@ const insuranceFaq = [
 ]
 const contactFaq = [
   'What if I don’t have all the property details?',
-  'The detailed inspection request is the best place to start when you have the information. If something is missing, use the basic-details option below and our office will help you take the next step.',
+  'Start an inspection request on our main website, or call our office if you need help with the details.',
 ]
 const areaFaq = [
   'Which areas do you serve?',

@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import SiteHeader from '@/components/campaign/SiteHeader.vue'
 import SiteFooter from '@/components/campaign/SiteFooter.vue'
-import QuoteForm from '@/components/campaign/QuoteForm.vue'
+import RequestContactLinks from '@/components/campaign/RequestContactLinks.vue'
 import Icon from '@/components/campaign/Icon.vue'
 import { trackEvent } from '@/utils/campaign'
 import { INSPECTION_REQUEST_URL } from '@/utils/inspectionIntent'
@@ -456,11 +456,9 @@ const reviews = [
             </summary>
             <div class="callback-content">
               <p>
-                The detailed quote above is recommended for a tailored inspection price. If you’re
-                missing information, leave your contact details below and our team will help you get
-                started.
+                Start your request on our main website, or call our team for help with the details.
               </p>
-              <QuoteForm :audience="audience" />
+              <RequestContactLinks placement="landing_contact" />
             </div>
           </details>
         </div>
