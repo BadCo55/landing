@@ -1,4 +1,5 @@
 <script setup>
+import { useAppStore } from '@/stores/appStore'
 import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import {
@@ -9,7 +10,8 @@ import {
 const route = useRoute()
 const intent = computed(() => resolveInspectionIntent(route.query.inspection))
 const context = computed(() => inspectionContext(intent.value))
-const quoteTo = computed(() => inspectionQuoteLink(intent.value))
+const store = useAppStore()
+const quoteTo = computed(() => inspectionQuoteLink(store.utmParams))
 import SiteHeader from '@/components/campaign/SiteHeader.vue'
 import SiteFooter from '@/components/campaign/SiteFooter.vue'
 import Icon from '@/components/campaign/Icon.vue'

@@ -1,4 +1,5 @@
 <script setup>
+import { useAppStore } from '@/stores/appStore'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import SiteHeader from '@/components/campaign/SiteHeader.vue'
@@ -6,8 +7,10 @@ import SiteFooter from '@/components/campaign/SiteFooter.vue'
 import RequestContactLinks from '@/components/campaign/RequestContactLinks.vue'
 import Icon from '@/components/campaign/Icon.vue'
 import { trackEvent } from '@/utils/campaign'
-import { INSPECTION_REQUEST_URL } from '@/utils/inspectionIntent'
+import { inspectionQuoteLink } from '@/utils/inspectionIntent'
 import '@/assets/styles/campaign.css'
+const store = useAppStore()
+const quoteTo = computed(() => inspectionQuoteLink(store.utmParams))
 const route = useRoute()
 const audience = computed(
   () =>
@@ -171,7 +174,7 @@ const reviews = [
             <div class="hero-actions">
               <a
                 class="button button-primary"
-                :href="INSPECTION_REQUEST_URL"
+                :href="quoteTo"
                 @click="quoteClick('hero')"
                 >Build my inspection quote <span class="button-icon"><Icon name="arrow" /></span
               ></a>
@@ -329,7 +332,7 @@ const reviews = [
             <h3>{{ service.name }}</h3>
             <p>{{ service.description }}</p>
             <div class="service-detail">{{ service.detail }}</div>
-            <a :href="INSPECTION_REQUEST_URL" @click="quoteClick('service_card', service.selection)"
+            <a :href="quoteTo" @click="quoteClick('service_card', service.selection)"
               >Get a quote <Icon name="arrow"
             /></a>
           </article>
@@ -437,7 +440,7 @@ const reviews = [
             </ul>
             <a
               class="button button-primary"
-              :href="INSPECTION_REQUEST_URL"
+              :href="quoteTo"
               @click="quoteClick('quote_section')"
               >Build my inspection quote <Icon name="arrow"
             /></a>
@@ -494,7 +497,7 @@ const reviews = [
           </div>
           <a
             class="button button-light"
-            :href="INSPECTION_REQUEST_URL"
+            :href="quoteTo"
             @click="quoteClick('closing')"
             >Let’s get started <Icon name="arrow"
           /></a>
@@ -507,7 +510,7 @@ const reviews = [
         ><Icon name="phone" /> Call DHI</a
       ><a
         class="button button-primary"
-        :href="INSPECTION_REQUEST_URL"
+        :href="quoteTo"
         @click="quoteClick('mobile_bar')"
         >Build my quote <Icon name="arrow"
       /></a>

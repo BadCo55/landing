@@ -34,8 +34,8 @@ Local detailed quote, progressive project, callback and sample-report request fo
 - Meta PageView is sent once per successful path change, excluding duplicate/failed and query/hash-only navigation.
 - Instrumented links send GA `request_quote_click`, `phone_click`, `sample_report_click`; report-group controls send `sample_report_section`.
 - This project no longer emits form-start, form-submit, lead or callback-conversion events. Request-link clicks are not completed leads; telephone-link clicks are not verified calls.
-- Five UTMs plus gclid, gbraid, wbraid, msclkid and fbclid remain captured for the browser session. New inbound campaign parameters replace the previous set, with an in-memory fallback when storage is blocked.
-- External links use the fixed destination; explicit parameter forwarding was not added. Confirm session/attribution continuity on the main website before relying on combined funnel reporting.
+- Five UTMs plus gclid, gbraid, wbraid, msclkid, fbclid and ttclid remain captured for the browser session. New inbound campaign parameters replace the previous set, with an in-memory fallback when storage is blocked.
+- Quote links and the retired-route redirect append stored nonempty allowlisted attribution to the fixed destination using URL encoding. Existing destination parameters are preserved; contact fields and CTA labels are never appended. The downstream application owns persistence after arrival.
 - Successful lead measurement must be owned by the main website's actual submission-completion implementation. Review GA4 key events, Meta rules and imported Ads goals there; do not promote landing-page clicks into lead conversions.
 
 See `ANALYTICS_AUDIT.md` for current tracking responsibilities and remaining external checks.

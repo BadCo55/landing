@@ -1,4 +1,5 @@
 <script setup>
+import { useAppStore } from '@/stores/appStore'
 import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import SiteHeader from '@/components/campaign/SiteHeader.vue'
@@ -11,7 +12,8 @@ import { trackEvent } from '@/utils/campaign'
 import '@/assets/styles/service-landings.css'
 const route = useRoute()
 const page = computed(() => serviceLandings[route.meta.inspection])
-const quoteTo = computed(() => inspectionQuoteLink(page.value.key))
+const store = useAppStore()
+const quoteTo = computed(() => inspectionQuoteLink(store.utmParams))
 const related = computed(() => page.value.related.map((key) => serviceLandings[key]))
 const openScope = ref(0)
 watch(

@@ -9,6 +9,7 @@ export const ATTRIBUTION_KEYS = [
   'wbraid',
   'msclkid',
   'fbclid',
+  'ttclid',
 ]
 const STORAGE_KEY = 'dhi_campaign_attribution'
 

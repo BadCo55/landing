@@ -1,7 +1,11 @@
 <script setup>
+import { useAppStore } from '@/stores/appStore'
+import { computed } from 'vue'
 import Icon from './Icon.vue'
-import { INSPECTION_REQUEST_URL } from '@/utils/inspectionIntent'
+import { inspectionQuoteLink } from '@/utils/inspectionIntent'
 import { trackEvent } from '@/utils/campaign'
+const store = useAppStore()
+const quoteTo = computed(() => inspectionQuoteLink(store.utmParams))
 
 const props = defineProps({
   placement: { type: String, required: true },
@@ -22,7 +26,7 @@ function track(event) {
     <p>
       <a
         class="button button-primary"
-        :href="INSPECTION_REQUEST_URL"
+        :href="quoteTo"
         @click="track('request_quote_click')"
         >Request an inspection <Icon name="arrow"
       /></a>

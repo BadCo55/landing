@@ -1,3 +1,5 @@
+import { ATTRIBUTION_KEYS } from './campaign.js'
+
 // Explicit route intent only: the main landing page never inherits a previous service choice.
 export const inspectionIntents = {
   maintenance: {
@@ -72,6 +74,11 @@ export function inspectionContext(value) {
 export const INSPECTION_REQUEST_URL =
   'https://diversifiedhomeinspections.com/landing/inspection-request/general'
 
-export function inspectionQuoteLink() {
-  return INSPECTION_REQUEST_URL
+export function inspectionQuoteLink(attribution = {}, destination = INSPECTION_REQUEST_URL) {
+  const url = new URL(destination)
+  for (const key of ATTRIBUTION_KEYS) {
+    const value = attribution?.[key]
+    if (typeof value === 'string' && value.trim()) url.searchParams.set(key, value)
+  }
+  return url.toString()
 }
