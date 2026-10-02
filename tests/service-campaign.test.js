@@ -6,6 +6,7 @@ import {
   resolveInspectionIntent,
   inspectionContext,
   inspectionQuoteLink,
+  inspectionRequestDestination,
   INSPECTION_REQUEST_URL,
 } from '../src/utils/inspectionIntent.js'
 test('quote links use the requested external destination; local intent stays explicit', () => {
@@ -24,6 +25,46 @@ test('quote links use the requested external destination; local intent stays exp
     assert.equal(resolveInspectionIntent(value), '')
     assert.equal(inspectionContext(value), null)
     assert.equal(inspectionQuoteLink(value), INSPECTION_REQUEST_URL)
+  }
+})
+
+test('only insurance, four-point and wind intents select the insurance quote route', () => {
+  const attribution = {
+    utm_source: 'google',
+    utm_medium: 'cpc',
+    utm_campaign: 'South Florida & homes',
+    utm_term: 'home inspection',
+    utm_content: 'ad+1',
+    gclid: 'google-click',
+    gbraid: 'google-braid',
+    wbraid: 'web-braid',
+    msclkid: 'ms-click',
+    fbclid: 'meta-click',
+    ttclid: 'tiktok-click',
+  }
+  for (const [intent, expected] of [
+    ['insurance', 'insurance'],
+    ['four-point', 'insurance'],
+    ['wind', 'insurance'],
+    ['general', 'general'],
+    ['maintenance', 'general'],
+    ['commercial', 'general'],
+    ['progressive', 'general'],
+    ['new-construction', 'general'],
+    ['', 'general'],
+    [undefined, 'general'],
+    [null, 'general'],
+    ['unknown', 'general'],
+    [['wind', 'general'], 'general'],
+  ]) {
+    const destination = inspectionRequestDestination(intent)
+    assert.equal(
+      destination,
+      'https://diversifiedhomeinspections.com/landing/inspection-request/' + expected,
+    )
+    const url = new URL(inspectionQuoteLink(attribution, destination))
+    assert.equal(url.origin + url.pathname, destination)
+    assert.deepEqual(Object.fromEntries(url.searchParams), attribution)
   }
 })
 

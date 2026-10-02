@@ -74,6 +74,12 @@ export function inspectionContext(value) {
 export const INSPECTION_REQUEST_URL =
   'https://diversifiedhomeinspections.com/landing/inspection-request/general'
 
+export function inspectionRequestDestination(intent) {
+  return ['insurance', 'four-point', 'wind'].includes(intent)
+    ? 'https://diversifiedhomeinspections.com/landing/inspection-request/insurance'
+    : INSPECTION_REQUEST_URL
+}
+
 export function inspectionQuoteLink(attribution = {}, destination = INSPECTION_REQUEST_URL) {
   const url = new URL(destination)
   for (const key of ATTRIBUTION_KEYS) {

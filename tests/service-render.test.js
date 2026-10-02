@@ -12,7 +12,7 @@ import { inspectionIntents, inspectionQuoteLink } from '../src/utils/inspectionI
 
 const root = fileURLToPath(new URL('../', import.meta.url))
 
-test('every active route offers external requests and no local submission forms', async () => {
+test('every quote CTA follows page intent, preserves attribution and avoids local forms', async () => {
   const transport = createHttpServer()
   const server = await createServer({
     configFile: false,
@@ -54,6 +54,14 @@ test('every active route offers external requests and no local submission forms'
       '/privacy',
       '/missing',
       ...Object.values(inspectionIntents).map((item) => item.path),
+      '/insurance-inspection/',
+      '/4-point-inspection/',
+      '/wind-mitigation/',
+      ...Object.keys(inspectionIntents).map((intent) => '/sample-report?inspection=' + intent),
+      '/sample-report?inspection=unknown',
+      // Acquisition fields and unrelated query strings must not override page intent.
+      '/general-inspection?inspection=wind',
+      '/homebuyer?inspection=insurance',
     ]
     for (const attribution of [
       {},
@@ -61,7 +69,12 @@ test('every active route offers external requests and no local submission forms'
         utm_source: 'google',
         utm_medium: 'cpc',
         utm_campaign: 'South Florida & homes',
+        utm_term: 'home inspection',
+        utm_content: 'ad+1',
         gclid: 'google-click',
+        gbraid: 'google-braid',
+        wbraid: 'web-braid',
+        msclkid: 'ms-click',
         fbclid: 'meta-click',
         ttclid: 'tiktok-click',
         email: 'never-forward@example.com',
@@ -73,6 +86,17 @@ test('every active route offers external requests and no local submission forms'
       const expectedURL = inspectionQuoteLink(attribution)
       redirects.length = 0
       for (const path of paths) {
+        const pageURL = new URL(path, 'https://landing.diversifiedhomeinspections.com')
+        const insurancePage =
+          ['/insurance-inspection', '/4-point-inspection', '/wind-mitigation'].includes(
+            pageURL.pathname.replace(/\/$/, ''),
+          ) ||
+          (pageURL.pathname === '/sample-report' &&
+            ['insurance', 'four-point', 'wind'].includes(pageURL.searchParams.get('inspection')))
+        const expectedPageURL = new URL(expectedURL)
+        expectedPageURL.pathname =
+          '/landing/inspection-request/' + (insurancePage ? 'insurance' : 'general')
+        const expectedQuote = expectedPageURL.toString()
         await router.push(path)
         const component = router.currentRoute.value.matched.at(-1).components.default
         const app = createSSRApp({ render: () => h(component) })
@@ -80,7 +104,7 @@ test('every active route offers external requests and no local submission forms'
           .use(router)
         const html = (await renderToString(app)).replaceAll('&amp;', '&')
         assert.ok(/<h1\b/.test(html), path + ' heading missing')
-        assert.ok(html.includes('href="' + expectedURL + '"'), path + ' external request missing')
+        assert.ok(html.includes('href="' + expectedQuote + '"'), path + ' external request missing')
         assert.doesNotMatch(html, /<(form|input|textarea)\b/i, path + ' must not collect form data')
         assert.doesNotMatch(
           html,
@@ -94,8 +118,11 @@ test('every active route offers external requests and no local submission forms'
             .replace(/<[^>]*>/g, ' ')
             .replace(/\s+/g, ' ')
             .trim()
-          if (/\bquote\b|request (?:an? |my |your |project |inspection)/i.test(text))
-            assert.ok(attrs.includes('href="' + expectedURL + '"'), path + ': ' + text)
+          if (
+            attrs.includes('/landing/inspection-request/') ||
+            /\bquote\b|request (?:an? |my |your |project |inspection)/i.test(text)
+          )
+            assert.ok(attrs.includes('href="' + expectedQuote + '"'), path + ': ' + text)
         }
       }
       // Real route resolution preserves old bookmarks but only exposes a redirect/fallback link.

@@ -5,13 +5,16 @@ import { useRoute } from 'vue-router'
 import {
   inspectionContext,
   inspectionQuoteLink,
+  inspectionRequestDestination,
   resolveInspectionIntent,
 } from '@/utils/inspectionIntent'
 const route = useRoute()
 const intent = computed(() => resolveInspectionIntent(route.query.inspection))
 const context = computed(() => inspectionContext(intent.value))
 const store = useAppStore()
-const quoteTo = computed(() => inspectionQuoteLink(store.utmParams))
+const quoteTo = computed(() =>
+  inspectionQuoteLink(store.utmParams, inspectionRequestDestination(intent.value)),
+)
 import SiteHeader from '@/components/campaign/SiteHeader.vue'
 import SiteFooter from '@/components/campaign/SiteFooter.vue'
 import Icon from '@/components/campaign/Icon.vue'

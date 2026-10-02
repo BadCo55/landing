@@ -2,10 +2,12 @@
 import { useAppStore } from '@/stores/appStore'
 import { computed } from 'vue'
 import Icon from './Icon.vue'
-import { inspectionQuoteLink } from '@/utils/inspectionIntent'
+import { inspectionQuoteLink, inspectionRequestDestination } from '@/utils/inspectionIntent'
 import { trackEvent } from '@/utils/campaign'
 const store = useAppStore()
-const quoteTo = computed(() => inspectionQuoteLink(store.utmParams))
+const quoteTo = computed(() =>
+  inspectionQuoteLink(store.utmParams, inspectionRequestDestination(props.inspectionIntent)),
+)
 
 const props = defineProps({
   placement: { type: String, required: true },

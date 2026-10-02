@@ -5,11 +5,17 @@ import { useRoute } from 'vue-router'
 import Icon from './Icon.vue'
 import logo from '@/assets/logo-light.svg'
 import { trackEvent } from '@/utils/campaign'
-import { inspectionContext, inspectionQuoteLink } from '@/utils/inspectionIntent'
+import {
+  inspectionContext,
+  inspectionQuoteLink,
+  inspectionRequestDestination,
+} from '@/utils/inspectionIntent'
 const props = defineProps({ inspectionIntent: { type: String, default: '' } })
 const context = computed(() => inspectionContext(props.inspectionIntent))
 const store = useAppStore()
-const quoteTo = computed(() => inspectionQuoteLink(store.utmParams))
+const quoteTo = computed(() =>
+  inspectionQuoteLink(store.utmParams, inspectionRequestDestination(props.inspectionIntent)),
+)
 const route = useRoute()
 const landingPath = computed(
   () =>

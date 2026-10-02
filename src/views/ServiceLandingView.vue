@@ -7,13 +7,15 @@ import SiteFooter from '@/components/campaign/SiteFooter.vue'
 import RequestContactLinks from '@/components/campaign/RequestContactLinks.vue'
 import Icon from '@/components/campaign/Icon.vue'
 import { serviceLandings } from '@/data/serviceLandings'
-import { inspectionQuoteLink } from '@/utils/inspectionIntent'
+import { inspectionQuoteLink, inspectionRequestDestination } from '@/utils/inspectionIntent'
 import { trackEvent } from '@/utils/campaign'
 import '@/assets/styles/service-landings.css'
 const route = useRoute()
 const page = computed(() => serviceLandings[route.meta.inspection])
 const store = useAppStore()
-const quoteTo = computed(() => inspectionQuoteLink(store.utmParams))
+const quoteTo = computed(() =>
+  inspectionQuoteLink(store.utmParams, inspectionRequestDestination(page.value.key)),
+)
 const related = computed(() => page.value.related.map((key) => serviceLandings[key]))
 const openScope = ref(0)
 watch(
