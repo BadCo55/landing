@@ -8,7 +8,7 @@ import vue from '@vitejs/plugin-vue'
 import { createSSRApp, createRenderer, h, ssrContextKey } from 'vue'
 import { renderToString } from 'vue/server-renderer'
 import { createPinia } from 'pinia'
-import { inspectionIntents, inspectionQuoteLink } from '../src/utils/inspectionIntent.js'
+import { inspectionIntents } from '../src/utils/inspectionIntent.js'
 
 const root = fileURLToPath(new URL('../', import.meta.url))
 
@@ -83,7 +83,13 @@ test('every quote CTA follows page intent, preserves attribution and avoids loca
       { utm_source: 'tiktok', ttclid: 'updated-click' },
     ]) {
       store.setUTMParams(attribution)
-      const expectedURL = inspectionQuoteLink(attribution)
+      const expectedAttribution = { ...attribution }
+      delete expectedAttribution.email
+      delete expectedAttribution.placement
+      const expectedURL = new URL(
+        'https://diversifiedhomeinspections.com/landing/inspection-request/general',
+      )
+      expectedURL.search = new URLSearchParams(expectedAttribution).toString()
       redirects.length = 0
       for (const path of paths) {
         const pageURL = new URL(path, 'https://landing.diversifiedhomeinspections.com')
@@ -121,8 +127,17 @@ test('every quote CTA follows page intent, preserves attribution and avoids loca
           if (
             attrs.includes('/landing/inspection-request/') ||
             /\bquote\b|request (?:an? |my |your |project |inspection)/i.test(text)
-          )
+          ) {
             assert.ok(attrs.includes('href="' + expectedQuote + '"'), path + ': ' + text)
+            const actual = new URL(attrs.match(/\bhref="([^"]+)"/)[1])
+            assert.deepEqual(Object.fromEntries(actual.searchParams), expectedAttribution, path)
+            assert.equal(
+              [...actual.searchParams].length,
+              Object.keys(expectedAttribution).length,
+              path,
+            )
+            assert.equal(actual.hash, '', path)
+          }
         }
       }
       // Real route resolution preserves old bookmarks but only exposes a redirect/fallback link.
@@ -165,7 +180,7 @@ test('every quote CTA follows page intent, preserves attribution and avoids loca
         app.mount({})
         app.unmount()
       }
-      assert.deepEqual(redirects, Array(4).fill(expectedURL))
+      assert.deepEqual(redirects, Array(4).fill(expectedURL.toString()))
     }
     await router.push('/?sample-report=true')
     assert.equal(router.currentRoute.value.name, 'sampleReport')

@@ -11,9 +11,13 @@ Vue 3 / Vite campaign site for landing.diversifiedhomeinspections.com.
 
 ## Request flow
 
-Every quote/request navigation button uses `https://diversifiedhomeinspections.com/landing/inspection-request/general`, in the same tab. The destination is centralized in `src/utils/inspectionIntent.js`.
+Every quote/request navigation button uses the same-tab destination selected centrally in `src/utils/inspectionIntent.js`. Each service route declares a `quoteFlow`; the shared destination map supports additional quote flows without separate button implementations.
 
-The old `/request-quote` route (including service-query variants and a trailing slash) replaces the current browser location with that external destination. A direct link remains visible if navigation cannot complete. `location.replace` prevents the redirect page from trapping visitors in a back-button loop.
+- `/insurance-inspection`, `/4-point-inspection`, `/wind-mitigation`: `https://diversifiedhomeinspections.com/landing/inspection-request/insurance`
+- `/general-inspection`, buyer/audience pages and other service pages: `https://diversifiedhomeinspections.com/landing/inspection-request/general`
+- Sample-report pages retain their explicit service intent. Missing or unrecognized intent defaults to general.
+
+The old `/request-quote` route (including service-query variants and a trailing slash) continues replacing the current browser location with the general quote destination. A direct link remains visible if navigation cannot complete. `location.replace` prevents the redirect page from trapping visitors in a back-button loop.
 
 Local detailed quote, progressive project, callback and sample-report request forms have been removed, together with their webhook senders, payload builders, validation/pricing helpers and obsolete form-bearing legacy views. The former callback sections now contain request and phone links. There is no Zapier connection or form submission in this application. External website forms and Zapier account workflows were not changed.
 
@@ -35,7 +39,7 @@ Local detailed quote, progressive project, callback and sample-report request fo
 - Instrumented links send GA `request_quote_click`, `phone_click`, `sample_report_click`; report-group controls send `sample_report_section`.
 - This project no longer emits form-start, form-submit, lead or callback-conversion events. Request-link clicks are not completed leads; telephone-link clicks are not verified calls.
 - Five UTMs plus gclid, gbraid, wbraid, msclkid, fbclid and ttclid remain captured for the browser session. New inbound campaign parameters replace the previous set, with an in-memory fallback when storage is blocked.
-- Quote links and the retired-route redirect append stored nonempty allowlisted attribution to the fixed destination using URL encoding. Existing destination parameters are preserved; contact fields and CTA labels are never appended. The downstream application owns persistence after arrival.
+- Quote links and the retired-route redirect append stored nonempty allowlisted attribution to the selected destination using URL encoding. Existing destination parameters are preserved; contact fields and CTA labels are never appended. The downstream application owns persistence after arrival.
 - Successful lead measurement must be owned by the main website's actual submission-completion implementation. Review GA4 key events, Meta rules and imported Ads goals there; do not promote landing-page clicks into lead conversions.
 
 See `ANALYTICS_AUDIT.md` for current tracking responsibilities and remaining external checks.

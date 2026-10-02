@@ -4,6 +4,7 @@ import { ATTRIBUTION_KEYS } from './campaign.js'
 export const inspectionIntents = {
   maintenance: {
     path: '/yearly-maintenance-inspection',
+    quoteFlow: 'general',
     label: 'Yearly maintenance inspection',
     title: 'Your yearly home check-in.',
     guidance:
@@ -12,6 +13,7 @@ export const inspectionIntents = {
   },
   general: {
     path: '/general-inspection',
+    quoteFlow: 'general',
     label: 'General home inspection',
     title: 'Your general inspection request.',
     guidance:
@@ -20,6 +22,7 @@ export const inspectionIntents = {
   },
   insurance: {
     path: '/insurance-inspection',
+    quoteFlow: 'insurance',
     label: 'Insurance inspections',
     title: 'Your insurance inspection request.',
     guidance:
@@ -28,6 +31,7 @@ export const inspectionIntents = {
   },
   wind: {
     path: '/wind-mitigation',
+    quoteFlow: 'insurance',
     label: 'Wind mitigation',
     title: 'Your wind mitigation request.',
     guidance:
@@ -36,6 +40,7 @@ export const inspectionIntents = {
   },
   'four-point': {
     path: '/4-point-inspection',
+    quoteFlow: 'insurance',
     label: '4-point inspection',
     title: 'Your 4-point inspection request.',
     guidance:
@@ -44,6 +49,7 @@ export const inspectionIntents = {
   },
   commercial: {
     path: '/commercial-inspection',
+    quoteFlow: 'general',
     label: 'Commercial inspection',
     title: 'Your commercial inspection request.',
     guidance:
@@ -51,6 +57,7 @@ export const inspectionIntents = {
   },
   progressive: {
     path: '/progressive-inspection',
+    quoteFlow: 'general',
     label: 'Progressive construction inspection',
     title: 'Tell us about your construction project.',
     guidance:
@@ -58,6 +65,7 @@ export const inspectionIntents = {
   },
   'new-construction': {
     path: '/new-construction-inspection',
+    quoteFlow: 'general',
     label: 'New construction final inspection',
     title: 'Your new construction inspection request.',
     guidance:
@@ -74,10 +82,13 @@ export function inspectionContext(value) {
 export const INSPECTION_REQUEST_URL =
   'https://diversifiedhomeinspections.com/landing/inspection-request/general'
 
+const quoteFlowDestinations = {
+  general: INSPECTION_REQUEST_URL,
+  insurance: 'https://diversifiedhomeinspections.com/landing/inspection-request/insurance',
+}
+
 export function inspectionRequestDestination(intent) {
-  return ['insurance', 'four-point', 'wind'].includes(intent)
-    ? 'https://diversifiedhomeinspections.com/landing/inspection-request/insurance'
-    : INSPECTION_REQUEST_URL
+  return quoteFlowDestinations[inspectionContext(intent)?.quoteFlow] || INSPECTION_REQUEST_URL
 }
 
 export function inspectionQuoteLink(attribution = {}, destination = INSPECTION_REQUEST_URL) {

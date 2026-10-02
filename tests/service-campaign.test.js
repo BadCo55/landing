@@ -1,5 +1,5 @@
 import test from 'node:test'
-import { captureAttribution } from '../src/utils/campaign.js'
+import { ATTRIBUTION_KEYS, captureAttribution } from '../src/utils/campaign.js'
 import assert from 'node:assert/strict'
 import {
   inspectionIntents,
@@ -67,6 +67,63 @@ test('only insurance, four-point and wind intents select the insurance quote rou
     assert.deepEqual(Object.fromEntries(url.searchParams), attribution)
   }
 })
+
+for (const [path, flow] of [
+  ['/general-inspection', 'general'],
+  ['/insurance-inspection', 'insurance'],
+  ['/4-point-inspection', 'insurance'],
+  ['/wind-mitigation', 'insurance'],
+]) {
+  test(`${path} hands off every acquisition parameter unchanged, once, to ${flow}`, () => {
+    const acquisitionKeys = [
+      'gclid',
+      'gbraid',
+      'wbraid',
+      'utm_source',
+      'utm_medium',
+      'utm_campaign',
+      'utm_term',
+      'utm_content',
+      'msclkid',
+      'fbclid',
+      'ttclid',
+    ]
+    assert.deepEqual([...ATTRIBUTION_KEYS].sort(), [...acquisitionKeys].sort())
+    const attribution = Object.fromEntries(
+      acquisitionKeys.map((key) => [key, ` ${key}: genuine + / ? & = # % 雪 `]),
+    )
+    let saved
+    const storage = {
+      getItem: () => saved,
+      setItem: (_, value) => {
+        saved = value
+      },
+    }
+    captureAttribution('?' + new URLSearchParams(attribution), storage)
+    const stored = captureAttribution('', storage)
+    const [intent, service] = Object.entries(inspectionIntents).find(
+      ([, value]) => value.path === path,
+    )
+    assert.equal(service.quoteFlow, flow)
+    const destination = inspectionRequestDestination(intent)
+    assert.equal(
+      destination,
+      `https://diversifiedhomeinspections.com/landing/inspection-request/${flow}`,
+    )
+    const handoff = inspectionQuoteLink(stored, destination)
+    const url = new URL(handoff)
+    assert.equal(url.origin + url.pathname, destination)
+    assert.equal(url.hash, '')
+    assert.deepEqual(Object.fromEntries(url.searchParams), attribution)
+    assert.equal([...url.searchParams].length, acquisitionKeys.length)
+    for (const key of acquisitionKeys) {
+      assert.deepEqual(url.searchParams.getAll(key), [attribution[key]])
+    }
+    // Rebuilding an already attributed handoff must not append duplicates or re-encode values.
+    assert.equal(inspectionQuoteLink(stored, handoff), handoff)
+    assert.deepEqual(stored, attribution)
+  })
+}
 
 test('stored acquisition UTMs survive internal navigation and are forwarded', () => {
   const saved = new Map()

@@ -4,7 +4,7 @@ Updated September 22, 2026 following the authorized cleanup. This report superse
 
 ## Request ownership
 
-All active quote-request navigation buttons point to `https://diversifiedhomeinspections.com/landing/inspection-request/general`. `/request-quote` now automatically redirects there with `location.replace`, with a direct-link fallback. Query variants cannot expose the removed forms. Former callback sections offer the external request link and a telephone link.
+Quote-request navigation uses the centralized service intent mapping: insurance, 4-point and wind mitigation use `https://diversifiedhomeinspections.com/landing/inspection-request/insurance`; general/buyer and other service pages use `https://diversifiedhomeinspections.com/landing/inspection-request/general`. Sample-report pages retain explicit service intent. `/request-quote` continues redirecting to general with `location.replace`, with a direct-link fallback. Query variants cannot expose the removed forms. Former callback sections offer the external request link and a telephone link.
 
 Local detailed quote, progressive project, callback and gated sample-report forms, their webhook senders and form-specific helpers have been removed. Obsolete legacy views/components that referenced the old forms or local quote buttons were also removed. No Zapier endpoints remain in source or regenerated deployment assets. The previous detailed-form submission guard was superseded by removal of the form itself.
 
